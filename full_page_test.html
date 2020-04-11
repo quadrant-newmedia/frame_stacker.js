@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Full Page Window Layer Test</title>
+	<script src="window_layers.js"></script>
+	<script src="centered_window_layers.js"></script>
+	<link rel="stylesheet" type="text/css" href="/centered_window_layers.css">
+</head>
+<body style="baground-color: rgba(1,0,0,0.1)">
+	<h1>This is a test</h1>
+	<button onclick="
+		var escape = document.getElementById('exit_on_escape').checked;
+		console.log(escape);
+		window.window_layers.push(window.location, {on_load: function(wl) {
+			wl.window.document.body.querySelector('#pop').style.display = '';
+			if (escape) {
+				window_layers.exit_on_escape(wl);
+			}
+		}});
+	">Push Layer</button><input id="exit_on_escape" type="checkbox">
+	<button onclick="centered_window_layers.push(location);">
+		Push Centered
+	</button>
+	<button 
+		onclick="window_layers.pop();" 
+		style="display: none;" 
+		id="pop">Pop Layer</button>
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+	</p>
+</body>
+</html>
