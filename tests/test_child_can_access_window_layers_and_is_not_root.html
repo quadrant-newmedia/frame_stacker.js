@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<script>
+		function run_tests() {
+			console.assert(window.window_layers, 'window_layers is not defined');
+			if (window_layers.is_root_window() === false) {
+				console.log('✓ window_layers is available');
+				console.log('✓ window window is not root');
+			}
+			window_layers.pop();
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body style="background-color: green;">
+	This is a full-window iframe. Does it cover the entire page, with no border?
+	<br>
+	<button onclick="
+		console.log('✓ window is full size');
+		window_layers.pop();
+	">Yes</button>
+	<button onclick="
+		console.error('window is not full size');
+		window_layers.pop();
+	">No</button>
+	<script>
+		function run_tests() {
+		}
+	</script>
+</body>
+</html>

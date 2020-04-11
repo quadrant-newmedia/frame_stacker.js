@@ -1,0 +1,17 @@
+.WindowLayersFullPageLayer {
+	/*
+		Note - position fixed is well supported, but still doesn't work on opera mini. If you want to support that, then you'll have to set position to absolute, and either:
+			use a scroll listener to maintain the correct "top" value
+
+			use something like tether.js to tether the layer to viewport
+
+			nest an inner scrolling container inside of the body element, and set html, body {height: 100%;}  
+
+		https://caniuse.com/#feat=css-fixed
+	*/
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}

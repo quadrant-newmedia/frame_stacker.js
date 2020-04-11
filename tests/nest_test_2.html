@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body style="background-color: green;">
+	This is a nested layer. Does it cover the parent?
+	<br>
+	<button onclick="
+		console.log('✓ nested layer covers parent layer');
+		window_layers.pop();
+	">Yes</button>
+	<button onclick="
+		console.error('nested layer does not cover parent layer');
+		window_layers.pop();
+	">No</button>
+</body>
+</html>

@@ -34,6 +34,14 @@
 		on_load: function(options) {
 
 		},
+		/*
+			TODO: Change signature to match window_layers.push
+			Create new on_create and on_load functions which perform our logic, and then call the passed in options (if given).
+
+			We can also have our own options, but they should just be additional properties on the same options object.
+
+			With this approach, we shouldn't have to export anything other than push()
+		*/
 		// recommended options
 		push: function(url, trap_focus) {
 			window_layers.push(url, {

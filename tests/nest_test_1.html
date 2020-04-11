@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body style="background-color: yellow;">
+	We will now push a nested window layer. Ensure that it covers this one.
+	<button onclick="window.push_nested();">
+		Okay, I'm ready
+	</button>
+
+	<script>
+		function push_nested() {
+			window_layers.push('./nest_test_2.html', {
+				on_load: function(wl) {
+					window_layers.load_helpers.show_layer(wl);
+					if (window.top && wl.window.top == window.top) {
+						console.log('✓ nested layer was added directly to root');
+					}
+					else {
+						console.error('Nested layer was not added to root window');
+					}
+				},
+				on_pop: function() {
+					window_layers.pop();
+				},
+			});			
+		}
+		function run_tests() {
+
+		}
+	</script>
+</body>
+</html>
