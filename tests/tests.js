@@ -15,15 +15,16 @@
 
 	var x = await wl.push(
 		'./test_child_can_access_window_layers_and_is_not_root.html',
-		[wl.simple_full_iframe, run_tests],
+		wl.simple_full_iframe, 
+		run_tests,
 	);
 	x = await wl.push(
 		'./test_child_is_full_size.html',
-		[wl.simple_full_iframe, run_tests],
+		wl.simple_full_iframe, run_tests,
 	);
 	x = await wl.push(
 		'./nest_test_1.html',
-		[wl.simple_full_iframe, run_tests],
+		wl.simple_full_iframe, run_tests,
 	);
 
 

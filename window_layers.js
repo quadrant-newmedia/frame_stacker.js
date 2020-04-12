@@ -147,11 +147,10 @@ window.window_layers = window.window_layers || (function(root_window) {
 		},
 	};
 
-	// TODO - take a third argument, which is a final plugin
-	// Makes calling syntax easier
-	function push(url, plugins) {
-		var plugins = plugins || [default_plugin];
-		var plugin = combine_plugins(plugins);
+	function push(url, plugin1, plugin2, etc) {
+		var plugin = combine_plugins(
+			Array.prototype.slice.call(arguments, 1)
+		);
 
 		var iframe = document.createElement('iframe');
 		iframes.push(iframe);
@@ -218,6 +217,7 @@ window.window_layers = window.window_layers || (function(root_window) {
 		is_root_window: function() {
 			return window == root_window;
 		},
+		combine_plugins: combine_plugins,
 
 		simple_full_iframe: simple_full_iframe,
 		swallow_parent_interactions: swallow_parent_interactions,

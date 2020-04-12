@@ -11,7 +11,8 @@
 
 	<script>
 		function push_nested() {
-			window_layers.push('./nest_test_2.html', [
+			window_layers.push(
+				'./nest_test_2.html', 
 				window_layers.simple_full_iframe,
 				{
 					on_load: function(iframe) {
@@ -26,7 +27,7 @@
 						window_layers.resolve();
 					},
 				}
-			]);			
+			);			
 		}
 		function run_tests() {
 
