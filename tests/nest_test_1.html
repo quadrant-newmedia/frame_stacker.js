@@ -11,20 +11,22 @@
 
 	<script>
 		function push_nested() {
-			window_layers.push('./nest_test_2.html', {
-				on_load: function(wl) {
-					window_layers.load_helpers.show_layer(wl);
-					if (window.top && wl.window.top == window.top) {
-						console.log('✓ nested layer was added directly to root');
-					}
-					else {
-						console.error('Nested layer was not added to root window');
-					}
-				},
-				on_pop: function() {
-					window_layers.pop();
-				},
-			});			
+			window_layers.push('./nest_test_2.html', [
+				window_layers.simple_full_iframe,
+				{
+					on_load: function(iframe) {
+						if (window.top && iframe.contentWindow.top == window.top) {
+							console.log('✓ nested layer was added directly to root');
+						}
+						else {
+							console.error('Nested layer was not added to root window');
+						}
+					},
+					on_resolve: function() {
+						window_layers.resolve();
+					},
+				}
+			]);			
 		}
 		function run_tests() {
 

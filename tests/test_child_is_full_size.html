@@ -8,11 +8,11 @@
 	<br>
 	<button onclick="
 		console.log('✓ window is full size');
-		window_layers.pop();
+		window_layers.resolve();
 	">Yes</button>
 	<button onclick="
 		console.error('window is not full size');
-		window_layers.pop();
+		window_layers.resolve();
 	">No</button>
 	<script>
 		function run_tests() {
