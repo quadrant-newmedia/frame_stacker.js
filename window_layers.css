@@ -1,4 +1,17 @@
-.WindowLayersFullPageLayer {
+/*
+	Makes an element take up the full space of the window-layers-container
+*/
+.WindowLayersFullLayer {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+window-layers-container {
+	display: block;
+
 	/*
 		Note - position fixed is well supported, but still doesn't work on opera mini. If you want to support that, then you'll have to set position to absolute, and either:
 			use a scroll listener to maintain the correct "top" value
@@ -14,4 +27,26 @@
 	left: 0;
 	height: 100%;
 	width: 100%;
+}
+
+/*
+	When there are any iframe layers open, window-layers-container should capture all mouse clicks that don't land on an iframe.
+
+	When there are no iframes open, clicks should pass through.
+	IMPORTANT - there can be no whitespace inside the element, or it will never match :empty
+*/
+window-layers-container:empty {
+	pointer-events: none;
+}
+
+/*
+	plugins may decide to wrap iframe in other elements, and those may extend beyond the iframe. If so, clicks on those wrapper elements should fall through - they should not be interactive in any way.
+	
+	When any iframe layers are open, all clicks should either land on one of the iframes or on the window-layers-container. This way we can be sure to handle all click events, and know which layer the user intended to click on.
+*/
+window-layers-container > * {
+	pointer-events: none;
+}
+window-layers-container iframe {
+	pointer-events: auto;
 }

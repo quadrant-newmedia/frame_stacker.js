@@ -29,11 +29,26 @@
 */
 'use strict';
 window.window_layers = window.window_layers || (function(root_window) {
-	var iframes = [];
+	function get_iframes() {
+		return document.querySelectorAll('window-layers-container iframe');
+	}
+	function get_top_iframe() {
+		var iframes = get_iframes();
+		// May return undefined
+		return iframes[iframes.length-1];
+	}
+	function get_container() {
+		var c = document.querySelector('window-layers-container');
+		if (!c) {
+			c = document.createElement('window-layers-container');
+			document.body.append(c);
+		}
+		return c;
+	}
 
-	// Plugin combining/executing
+	// Plugin combining
 	/////////////////////////////////////////////////////////////////
-	function execute_function(plugins, function_name) {
+	function execute_all(plugins, function_name) {
 		var functions = plugins.map(
 			function(plugin) {return plugin[function_name]}
 		).filter(Boolean);
@@ -44,39 +59,41 @@ window.window_layers = window.window_layers || (function(root_window) {
 			}
 		}
 	}
+	function get_first_defined(plugins, property) {
+		for (var i = 0; i < plugins.length; i++) {
+			if (property in plugins[i]) {
+				return plugins[i][property];
+			}
+		}
+	}
 	function combine_plugins(plugins) {
 		/*
 			Given an array of plugins, create a single plugin with all methods implemented.
 		*/
 		return {
-			setup: execute_function(plugins, 'setup'),
-			on_first_load: execute_function(plugins, 'on_first_load'),
-			on_load: execute_function(plugins, 'on_load'),
-			on_parent_interaction: execute_function(plugins, 'on_parent_interaction'),
-			on_resolve: execute_function(plugins, 'on_resolve'),
-			remove: execute_function(plugins, 'remove'),
+			/*
+				At least one plugin must define this.
+				Must accept container element and return an iframe element.
+				The iframe must be inserted into the container, possibly with wrapper elements.
+			*/
+			create: get_first_defined(plugins, 'create'),
+			on_first_load: execute_all(plugins, 'on_first_load'),
+			on_load: execute_all(plugins, 'on_load'),
+			trap_focus: get_first_defined(plugins, 'trap_focus'),
+			on_resolve: execute_all(plugins, 'on_resolve'),
+			remove: get_first_defined(plugins, 'remove'),
 		}
 	}
 
 	// Handling interactions in parent layers
 	/////////////////////////////////////////////////////////////////
 	document.addEventListener('click', function(event) {
-		if (!iframes.length) return
 		handle_parent_interaction(document, event);
 	}, true);
 	function on_iframe_click(event) {
-		if (document.activeElement == iframes[iframes.length-1]) return
 		handle_parent_interaction(event.target.ownerDocument, event);
 	}
 	function on_iframe_blur(event) {
-		var active_document = document;
-		if (
-			document.activeElement && 
-			document.activeElement == iframes[iframes.length-1]
-		) {
-			// The proper iframe still has focus
-			return
-		}
 		var ae = document.activeElement;	
 		handle_parent_interaction(
 			(ae && ae.contentDocument) || document,
@@ -84,51 +101,54 @@ window.window_layers = window.window_layers || (function(root_window) {
 		);
 	}
 	function handle_parent_interaction(active_document, event) {
-		var is_prevented = false;
-		function prevent() {
-			is_prevented = true;
-			event.preventDefault();
-			event.stopPropagation();
-			setTimeout(function() {
-				iframes.length && iframes[iframes.length-1].focus();
-			}, 0);
-		}
-
+		// Handle an event which occurred in active_document
+		// active_document may or may not be the top-most document
+		var iframes = get_iframes();
 		var i = iframes.length-1;
-		// Intentionally iterate over iframes
+		// Intentionally iterate over iframes in reverse
 		for (
 			var i = iframes.length - 1; 
-			i >= 0 && !is_prevented && iframes[i].contentDocument != active_document; 
+			i >= 0 && iframes[i].contentDocument != active_document; 
 			i--
 		) {
-			iframes[i]._window_layers_plugin.on_parent_interaction(iframes[i], prevent);
+			var iframe = iframes[i];
+			// This iframe has already been resolved, and in the process of being removed from the DOM
+			if (iframe._window_layers_resolved) continue
+
+			// Notice - we call these multiple times, but that's not an issue
+			event.preventDefault();
+			event.stopPropagation();
+
+			if (iframe._window_layers_plugin.trap_focus) {
+				setTimeout(function() {
+					iframe.focus();
+				}, 0);
+				return
+			}
+			else {
+				// reminder - this may not remove the iframe from the DOM immediately, but we're iterating over a saved array of iframes, so that's okay
+				resolve();
+			}
 		}
 	}
 
 	// Some useful plugins
 	/////////////////////////////////////////////////////////////////
 	var simple_full_iframe = {
-		setup: function(iframe) {
+		create: function(container) {
+			var iframe = document.createElement('iframe');
+			container.appendChild(iframe);
 			iframe.style.opacity = '0';
 			iframe.style.border = 'none';
-			iframe.classList.add('WindowLayersFullPageLayer');
-			document.body.appendChild(iframe);
+			iframe.classList.add('WindowLayersFullLayer');
+			return iframe;
 		},
 		on_first_load: function(iframe) {
 			iframe.style.opacity = '1';
 		},
-		remove: function(iframe) {
-			document.body.removeChild(iframe);
-		},
-	};
-	var swallow_parent_interactions = {
-		on_parent_interaction: function(iframe, prevent) {
-			prevent();
-		},
-	};
-	var exit_on_parent_interactions = {
-		on_parent_interaction: function(iframe, prevent) {
-			resolve();
+		trap_focus: true,
+		remove: function(iframe, container) {
+			container.removeChild(iframe);
 		},
 	};
 	var exit_on_escape = {
@@ -152,9 +172,7 @@ window.window_layers = window.window_layers || (function(root_window) {
 			Array.prototype.slice.call(arguments, 1)
 		);
 
-		var iframe = document.createElement('iframe');
-		iframes.push(iframe);
-		plugin.setup(iframe);
+		var iframe = plugin.create(get_container());
 		iframe._window_layers_plugin = plugin;
 
 		// only use promises if supported
@@ -177,6 +195,8 @@ window.window_layers = window.window_layers || (function(root_window) {
 			iframe.contentDocument.addEventListener('click', function(e) {
 				on_iframe_click(e);
 			}, true);
+
+			// TODO - verify that this works. Check in multiple browsers
 			iframe.contentWindow.addEventListener('blur', on_iframe_blur);
 
 			if (first_load) {
@@ -194,19 +214,34 @@ window.window_layers = window.window_layers || (function(root_window) {
 		return promise;
 	}
 	function _resolve_no_focus_change(value) {
-		var iframe = iframes.pop();
+		/*
+			reminder - calling plugin.remove(iframe) may not remove it from the DOM immediately. We need remove the tompost one that is not already removed.
+		*/
+
+		var iframes = get_iframes();
+		var iframe;
+		for (var i = iframes.length - 1; i >= 0; i--) {
+			if (iframes[i]._window_layers_resolved) continue
+			iframe = iframes[i];
+			break;
+		}
+
 		if (!iframe) return;
 
 		if (iframe._resolve_window_layer_promise) {
 			iframe._resolve_window_layer_promise(value);
 		}
-		iframe._window_layers_plugin.on_resolve(value, iframe);
-		iframe._window_layers_plugin.remove(iframe);
+		iframe._window_layers_plugin.remove(iframe, get_container());
+		iframe._window_layers_plugin.on_resolve(value);
 	}
 	function resolve(value) {
+		var iframes = get_iframes();
+		var next_top = iframes[iframes.length-2];
+
+		// Reminder - may not synchronously remove the iframe
 		_resolve_no_focus_change(value);
-		if (iframes.length) {
-			iframes[iframes.length-1].focus();
+		if (next_top) {
+			next_top.focus();
 		}
 	}
 
@@ -220,8 +255,6 @@ window.window_layers = window.window_layers || (function(root_window) {
 		combine_plugins: combine_plugins,
 
 		simple_full_iframe: simple_full_iframe,
-		swallow_parent_interactions: swallow_parent_interactions,
-		exit_on_parent_interactions: exit_on_parent_interactions,
 		exit_on_escape: exit_on_escape,
 	};
 })();
