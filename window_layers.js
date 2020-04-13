@@ -5,19 +5,20 @@
 
 	Manages a stack of "window iframes" (positioned iframes).
 
-	We block user interactions on all but the top layer.
-
-	TODO - actually block click events? We currently rely on backdrop layer stopping actual mouse clicks, but what about something like Vimium? 
+	We block user interactions on all but the top layer, and prevent document scrolling while any iframe layers are open.
 
 	Creates a global "window_layers" object, which will be available in all child windows. Child windows can pop themselves, push more windows, etc.
 
 	Child windows can also include this script, and it will have no impact. In those windows, "window_layers" will still refer to the object in the root window. This means you can create pages that can function either as a root window or a child window.
 
-	This script does not contain many options for positioning/styling the windows. Instead, window_layers.push() takes an "on_create" callback, which can be used to position the iframe to your liking. The intention is to create other wrapper/helper scripts for creating different types of "iframes".
+	This script does not contain many options for positioning/styling the windows. Instead, window_layers.push() accepts any number of "plugin" objects, which can be used to position the iframe and/or add functionality. See the "combine_plugins" function for info on how plugins work.
 
 	Inter-layer communication:
-	The only means of inter-layer communication we provide are the "on_load" and "on_first_load" callback arguments to window_layers.push(). You can use these to setup communication between your iframes. This approach is very powerful, because the "on_load" callback is called every time opened layer loads (ie. reloads, navigates to new page, etc.).
-	TODO - either add on_first_load, or remove reference to it above
+	Openers are meant to pass information to openees via the "on_load" (or "on_first_load") plugin method. Information can flow back via:
+	- some means of communication/callbacks that you connect in on_load
+	- the on_resolve plugin method
+	- the returned promise from push()
+	TODO - expand on this, document Promise requirements
 
 	We intend to impose no requirements on child windows (no required scripts or styles, no required protocols to implement). The idea is that any page should be useable as a "widget" via window_layers. The on_load callback should allow you to setup communication with the child window, no matter what it's existing API is. 
 
@@ -29,6 +30,12 @@
 */
 'use strict';
 window.window_layers = window.window_layers || (function(root_window) {
+	var locked_scroll_top = null;
+	document.addEventListener('scroll', function() {
+		if (locked_scroll_top === null) return
+		document.documentElement.scrollTop = locked_scroll_top;
+	});
+
 	function get_iframes() {
 		return document.querySelectorAll('window-layers-container iframe');
 	}
@@ -168,6 +175,8 @@ window.window_layers = window.window_layers || (function(root_window) {
 	};
 
 	function push(url, plugin1, plugin2, etc) {
+		locked_scroll_top = document.documentElement.scrollTop;
+
 		var plugin = combine_plugins(
 			Array.prototype.slice.call(arguments, 1)
 		);
@@ -215,24 +224,28 @@ window.window_layers = window.window_layers || (function(root_window) {
 	}
 	function _resolve_no_focus_change(value) {
 		/*
-			reminder - calling plugin.remove(iframe) may not remove it from the DOM immediately. We need remove the tompost one that is not already removed.
+			reminder - calling plugin.remove(iframe) may not remove it from the DOM immediately. We need to look at only those that have not already been removed.
 		*/
+		var iframes = Array.prototype.slice.call(
+			get_iframes()
+		).filter(function(iframe) {
+			return !iframe._window_layers_resolved;
+		});
 
-		var iframes = get_iframes();
-		var iframe;
-		for (var i = iframes.length - 1; i >= 0; i--) {
-			if (iframes[i]._window_layers_resolved) continue
-			iframe = iframes[i];
-			break;
-		}
-
+		var iframe = iframes.pop();
 		if (!iframe) return;
+		iframe._window_layers_resolved = true;
 
 		if (iframe._resolve_window_layer_promise) {
 			iframe._resolve_window_layer_promise(value);
 		}
-		iframe._window_layers_plugin.remove(iframe, get_container());
 		iframe._window_layers_plugin.on_resolve(value);
+		iframe._window_layers_plugin.remove(iframe, get_container());
+
+		// Unlock document scrolling, if this was the last iframe
+		if (iframes.length == 0) {
+			locked_scroll_top = null;
+		}
 	}
 	function resolve(value) {
 		var iframes = get_iframes();
