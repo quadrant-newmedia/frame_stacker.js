@@ -4,9 +4,44 @@
 	<title>Window Layers Tests</title>
 	<link rel="stylesheet" type="text/css" href="/window_layers.css">
 	<script type="module" src='../src/window_layers.js'></script>
-	<script type="module" src="./tests.js"></script>
+	<script type="module">
+		import * as test_utils from './test_utils.js'
+		(async function() {
+			var wl = window_layers;
+
+			await wl.push(
+				'./test_child_is_full_size.html',
+				wl.simple_full_iframe, test_utils.run_tests,
+			);
+			// await wl.push(
+			// 	'./nest_test_1.html',
+			// 	wl.simple_full_iframe, test_utils.run_tests,
+			// );
+			// await wl.push(
+			// 	'./focus_management_1.html',
+			// 	wl.simple_full_iframe, test_utils.run_tests,
+			// );
+		})();
+	</script>
 </head>
 <body>
+	<p>
+		<button onclick="
+			this.nextElementSibling.focus();
+			window_layers.push('./close_with_button.html');
+		">Click Me</button>
+		<input type="" name="">
+		<br>
+		Was the input's focus restored after window layer was resolved?
+		<button onclick="
+			window.test_utils.log_test(true, 'root window focus is restored after last layer is resolved')
+		">Yes</button>
+		<button onclick="
+			window.test_utils.log_test(false, 'root window focus is restored after last layer is resolved')
+		">No</button>
+	</p>
+
+
 	<div style="width: 100px;">
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,

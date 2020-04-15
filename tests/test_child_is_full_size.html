@@ -2,21 +2,18 @@
 <html>
 <head>
 	<title></title>
+	<script type="module" src="./test_utils.js"></script>
 </head>
 <body style="background-color: green;">
 	This is a full-window iframe. Does it cover the entire page, with no border?
 	<br>
 	<button autofocus onclick="
-		console.log('✓ window is full size');
+		window.test_utils.log_test(true, 'window is full size');
 		window_layers.resolve();
 	">Yes</button>
 	<button onclick="
-		console.error('window is not full size');
+		window.test_utils.log_test(false, 'window is full size');
 		window_layers.resolve();
 	">No</button>
-	<script>
-		function run_tests() {
-		}
-	</script>
 </body>
 </html>

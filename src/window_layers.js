@@ -1,5 +1,6 @@
 import * as layer_manager from './layer_manager.js';
 import * as standard_plugins from './plugins.js';
+import focus_management from './plugins/focus_management.js';
 
 // Plugin combining
 /////////////////////////////////////////////////////////////////
@@ -9,6 +10,7 @@ function execute_all(plugins, function_name) {
 	).filter(Boolean);
 	return function() {
 		for (var i = 0; i < functions.length; i++) {
+			// TODO - should we catch and log exceptions, and continue iteration?
 			functions[i].apply(null, arguments);
 		}
 	}
@@ -31,13 +33,17 @@ function combine_plugins(plugins) {
 			The iframe must be inserted into the container, possibly with wrapper elements.
 		*/
 		create: get_first_defined(plugins, 'create'),
+		remove: get_first_defined(plugins, 'remove'),
+
+		exit_on_external_click: get_first_defined(plugins, 'exit_on_external_click'),
+		lock_scroll: get_first_defined(plugins, 'lock_scroll'),
+
 		on_created: execute_all(plugins, 'on_created'),
 		on_first_load: execute_all(plugins, 'on_first_load'),
 		on_load: execute_all(plugins, 'on_load'),
 		on_covered: execute_all(plugins, 'on_covered'),
 		on_resumed: execute_all(plugins, 'on_resumed'),
 		on_resolve: execute_all(plugins, 'on_resolve'),
-		remove: get_first_defined(plugins, 'remove'),
 	}
 }
 function validate(plugin) {
@@ -49,24 +55,20 @@ function validate(plugin) {
 	}
 }
 
-const root_window = window;
 window.window_layers = {
 	push: function(url, ...plugins) {
 		if (plugins.length == 0) {
 			plugins = [standard_plugins.simple_full_iframe];
 		}
-		// TODO - add fixed set of plugins which are always used
-		var plugin = combine_plugins(plugins);
+		// prepend a fixed set of plugins, which are always used
+		plugins = [focus_management].concat(plugins);
+		const plugin = combine_plugins(plugins);
 		validate(plugin);
 		return layer_manager.push(url, plugin);
 	},
 	resolve: function(value) {
 		return layer_manager.resolve(value);
 	},
-	is_root_window: function() {
-		return window == root_window;
-	},
 	simple_full_iframe: standard_plugins.simple_full_iframe,
 	exit_on_escape: standard_plugins.exit_on_escape,
-
 };
