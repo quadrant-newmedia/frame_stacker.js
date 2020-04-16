@@ -52,23 +52,16 @@ function combine_plugins(...plugins) {
 	}
 }
 function validate(plugin) {
-	if (!plugin.create) {
-		throw new Error('When calling window_layers.push() with custom plugins, at least one of those plugins must implement create()');
-	}
-	if (!plugin.remove) {
-		throw new Error('When calling window_layers.push() with custom plugins, at least one of those plugins must implement remove()');
+	if (!plugin.create || !plugin.remove) {
+		throw new Error('You must pass at least one plugin that implements create() and one plugin that implements remove() to window_layers.push(). We generally recommend starting with window_layers.full_layer or window_layers.auto_layer.');
 	}
 }
 
 window.window_layers = {
 	push: function(url, ...plugins) {
-		// TODO - remove default plugins?
-		// I think it just adds confusion, and auto_layer may be even more useful/common than full layer
-		if (plugins.length == 0) {
-			plugins = [full_layer];
-		}
 		// prepend a fixed set of plugins, which are always used
 		plugins = [focus_management].concat(plugins);
+
 		const plugin = combine_plugins(...plugins);
 		validate(plugin);
 		return layer_manager.push(url, plugin);
