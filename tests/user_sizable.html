@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body style="background-color: white;">
+    <p>Use arrow keys to resize iframe.</p>
+    <script type="text/javascript">
+        addEventListener('keydown', function(e) {
+            var delta_x = 0;
+            var delta_y = 0;
+            switch (e.key) {
+                case 'ArrowLeft':
+                    delta_x = -1;
+                    break;
+                case 'ArrowRight':
+                    delta_x = 1;
+                    break;
+                case 'ArrowUp':
+                    delta_y = -1;
+                    break;
+                case 'ArrowDown':
+                    delta_y = 1;
+                    break;
+            }
+            if (delta_x || delta_y) {
+                e.preventDefault();
+                iframe.style.width = parseInt(iframe.style.width)+20*delta_x+'px';
+                iframe.style.height = parseInt(iframe.style.height)+20*delta_y+'px';
+            }
+        });
+    </script>
+</body>
+</html>

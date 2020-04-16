@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Full Layer</title>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body style="background-color: green; padding: 10px;">
+    <main style="background-color: white; padding: 10px;">
+        <p>
+            You should notice:    
+        </p>
+        <ol>
+            <li>This iframe covers the entire viewport</li>
+            <li>The document in the parent window cannot be scrolled while this iframe is open</li>
+            <li>The "Close" button below auto-focuses</li>
+            <li>If you <button onclick="location.reload()">click this button</button>, the iframe will reload and the "Close" button will be re-focused</li>
+            <li>If you press tab (or shift+tab), focus will wrap between the inputs in this iframe</li>
+            <li>After closing this window, the button you clicked to open it will be re-focused</li>
+        </ol>
+        <button autofocus onclick="window_layers.resolve(99);">Close</button><input type="" name=""><input>
+    </main>
+</body>
+</html>
