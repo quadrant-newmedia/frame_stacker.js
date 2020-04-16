@@ -6,13 +6,17 @@
 	<script type="module" src='../src/window_layers.js'></script>
 	<script type="module">
 		import * as test_utils from './test_utils.js'
-		(async function() {
-			var wl = window_layers;
 
-			await wl.push(
-				'./test_child_is_full_size.html',
-				wl.simple_full_iframe, test_utils.run_tests,
-			);
+		// short alias, available in inline event handlers
+		window.wl = window_layers;
+
+		(async function() {
+			const wl = window_layers;
+
+			// await wl.push(
+			// 	'./test_child_is_full_size.html',
+			// 	wl.simple_full_iframe, test_utils.run_tests,
+			// );
 			// await wl.push(
 			// 	'./nest_test_1.html',
 			// 	wl.simple_full_iframe, test_utils.run_tests,
@@ -39,6 +43,12 @@
 		<button onclick="
 			window.test_utils.log_test(false, 'root window focus is restored after last layer is resolved')
 		">No</button>
+	</p>
+
+	<p>
+		<button onclick="
+			wl.push('./auto_sizing_test.html', wl.simple_full_iframe, wl.auto_sizing);
+		">Push auto-sizing window</button>
 	</p>
 
 

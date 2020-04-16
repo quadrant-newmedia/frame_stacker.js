@@ -1,5 +1,9 @@
 import * as layer_manager from './layer_manager.js';
+
+// TODO - move each of these to its own file
 import * as standard_plugins from './plugins.js';
+
+import auto_sizing from './plugins/auto_sizing.js';
 import focus_management from './plugins/focus_management.js';
 
 // Plugin combining
@@ -69,6 +73,7 @@ window.window_layers = {
 	resolve: function(value) {
 		return layer_manager.resolve(value);
 	},
-	simple_full_iframe: standard_plugins.simple_full_iframe,
+	auto_sizing: auto_sizing,
 	exit_on_escape: standard_plugins.exit_on_escape,
+	simple_full_iframe: standard_plugins.simple_full_iframe,
 };
