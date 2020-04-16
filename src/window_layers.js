@@ -1,6 +1,8 @@
 import * as layer_manager from './layer_manager.js';
-import * as standard_plugins from './plugins.js';
+import * as simple_plugins from './plugins.js';
 import focus_management from './plugins/focus_management.js';
+
+import auto_centering from './plugins/auto_centering.js';
 
 // Plugin combining
 /////////////////////////////////////////////////////////////////
@@ -58,7 +60,7 @@ function validate(plugin) {
 window.window_layers = {
 	push: function(url, ...plugins) {
 		if (plugins.length == 0) {
-			plugins = [standard_plugins.simple_full_iframe];
+			plugins = [simple_plugins.simple_full_iframe];
 		}
 		// prepend a fixed set of plugins, which are always used
 		plugins = [focus_management].concat(plugins);
@@ -69,6 +71,11 @@ window.window_layers = {
 	resolve: function(value) {
 		return layer_manager.resolve(value);
 	},
-	simple_full_iframe: standard_plugins.simple_full_iframe,
-	exit_on_escape: standard_plugins.exit_on_escape,
+	simple_full_iframe: simple_plugins.simple_full_iframe,
+	shadow_border: simple_plugins.shadow_border,
+	// TODO - take arguments
+	auto_centering: auto_centering(),
+
+	exit_on_escape: simple_plugins.exit_on_escape,
+	easy_exit: combine_plugins([simple_plugins.exit_on_escape, {exit_on_external_click: true}]),
 };

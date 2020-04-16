@@ -3,16 +3,19 @@
 <head>
 	<title>Window Layers Tests</title>
 	<link rel="stylesheet" type="text/css" href="/window_layers.css">
+	<link rel="stylesheet" type="text/css" href="./style.css">
 	<script type="module" src='../src/window_layers.js'></script>
 	<script type="module">
+		// make available to inline event handlers via short alias
+		window.wl = window_layers;
 		import * as test_utils from './test_utils.js'
 		(async function() {
 			var wl = window_layers;
 
-			await wl.push(
-				'./test_child_is_full_size.html',
-				wl.simple_full_iframe, test_utils.run_tests,
-			);
+			// await wl.push(
+			// 	'./test_child_is_full_size.html',
+			// 	wl.simple_full_iframe, test_utils.run_tests,
+			// );
 			// await wl.push(
 			// 	'./nest_test_1.html',
 			// 	wl.simple_full_iframe, test_utils.run_tests,
@@ -25,6 +28,33 @@
 	</script>
 </head>
 <body>
+	<h2>Basic/Full Layer Tests</h2>
+	<p>
+		<button onclick="wl.push('./basic_full_layer.html')">
+			Open Full Layer Modal
+		</button>
+	</p>
+
+	<h2>Auto-centering Layer</h2>
+	Resize the iframe and verify that:
+	<ul>
+		<li>Height is bounded (and respects the "wrapper_padding" value passed to auto_centering)</li>
+		<li>Width is bounded (and respects the "wrapper_padding" value passed to auto_centering)</li>
+		<li>Iframe shifts toward top of viewport when small - looks more balanced that way, closer to how alert() windows look</li>
+	</ul>
+	<p>
+		<button onclick="wl.push('./user_sizable.html', wl.auto_centering, wl.shadow_border, wl.easy_exit, {
+			on_created: function(iframe) {
+				iframe.style.width = '300px';
+				iframe.style.height = '200px';
+			},
+			on_load: function(iframe) {
+				iframe.contentWindow.iframe = iframe;
+			},
+		})">Open Auto-centering</button>
+	</p>
+
+
 	<p>
 		<button onclick="
 			this.nextElementSibling.focus();
@@ -40,6 +70,8 @@
 			window.test_utils.log_test(false, 'root window focus is restored after last layer is resolved')
 		">No</button>
 	</p>
+
+
 
 
 	<div style="width: 100px;">

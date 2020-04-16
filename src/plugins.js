@@ -17,6 +17,7 @@ export const simple_full_iframe = {
 	on_first_load: function(iframe) {
 		iframe.style.opacity = '1';
 	},
+	lock_scroll: true,
 	remove: function(iframe, container) {
 		container.removeChild(iframe);
 	},
@@ -34,5 +35,12 @@ export const exit_on_escape = {
 
 			window_layers.resolve();
 		});
+	},
+};
+export const shadow_border = {
+	on_created: function(iframe) {
+		iframe.style.border = 'none';
+		iframe.style.borderRadius = '5px';
+		iframe.style.boxShadow = '0 0 10px 5px #888';
 	},
 };
