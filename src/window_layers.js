@@ -1,8 +1,11 @@
 import * as layer_manager from './layer_manager.js';
-import * as simple_plugins from './plugins.js';
+
 import auto_sizing from './plugins/auto_sizing.js';
-import focus_management from './plugins/focus_management.js';
 import auto_centering from './plugins/auto_centering.js';
+import exit_on_escape from './plugins/exit_on_escape.js';
+import focus_management from './plugins/focus_management.js';
+import full_layer from './plugins/full_layer.js';
+import shadow_border from './plugins/shadow_border.js';
 
 // Plugin combining
 /////////////////////////////////////////////////////////////////
@@ -24,7 +27,7 @@ function get_first_defined(plugins, property) {
 		}
 	}
 }
-function combine_plugins(plugins) {
+function combine_plugins(...plugins) {
 	/*
 		Given an array of plugins, create a single plugin with all methods implemented.
 	*/
@@ -59,12 +62,14 @@ function validate(plugin) {
 
 window.window_layers = {
 	push: function(url, ...plugins) {
+		// TODO - remove default plugins?
+		// I think it just adds confusion, and auto_layer may be even more useful/common than full layer
 		if (plugins.length == 0) {
-			plugins = [simple_plugins.simple_full_iframe];
+			plugins = [full_layer];
 		}
 		// prepend a fixed set of plugins, which are always used
 		plugins = [focus_management].concat(plugins);
-		const plugin = combine_plugins(plugins);
+		const plugin = combine_plugins(...plugins);
 		validate(plugin);
 		return layer_manager.push(url, plugin);
 	},
@@ -72,13 +77,26 @@ window.window_layers = {
 		return layer_manager.resolve(value);
 	},
 
-	simple_full_iframe: simple_plugins.simple_full_iframe,
+	// End users may want to call this to combine a commonly used set of plugins 
+	combine_plugins: combine_plugins,
 
-	auto_sizing: auto_sizing,
-	shadow_border: simple_plugins.shadow_border,
-	// TODO - take arguments
+	// Most of the time, you'll use one of these two as your "base" plugin
+	// TODO - rename? full_layer?
+	full_layer: full_layer,
+	auto_layer: combine_plugins(
+		auto_centering, 
+		auto_sizing, 
+		shadow_border
+	),
+
+	// other "feature" plugins you may want to use:
+	// TODO - default arguments
 	auto_centering: auto_centering(),
-
-	exit_on_escape: simple_plugins.exit_on_escape,
-	easy_exit: combine_plugins([simple_plugins.exit_on_escape, {exit_on_external_click: true}]),
+	auto_sizing: auto_sizing,
+	easy_exit: combine_plugins(
+		exit_on_escape, 
+		{exit_on_external_click: true},
+	),
+	exit_on_escape: exit_on_escape,
+	shadow_border: shadow_border,
 };

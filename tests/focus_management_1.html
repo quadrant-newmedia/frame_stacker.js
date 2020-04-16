@@ -8,7 +8,7 @@
             const wl = window.window_layers;
             test_utils.log_test(passed, 'Button with autofocus is focused when new layer is first pushed');
             document.getElementById('focus_restore').focus();
-            wl.push('./focus_management_2.html', wl.simple_full_iframe, test_utils.run_tests);
+            wl.push('./focus_management_2.html', wl.full_layer, test_utils.run_tests);
         };
         window.focus_restore_passed = function(passed) {
             test_utils.log_test(passed, 'Focus was restored after layer resolved.');

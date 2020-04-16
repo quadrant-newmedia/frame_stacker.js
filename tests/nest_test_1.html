@@ -13,7 +13,7 @@
 		function push_nested() {
 			window_layers.push(
 				'./nest_test_2.html', 
-				window_layers.simple_full_iframe,
+				window_layers.full_layer,
 				{
 					on_load: function(iframe) {
 						if (window.top && iframe.contentWindow.top == window.top) {
