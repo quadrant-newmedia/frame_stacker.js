@@ -1,0 +1,4 @@
+#!/bin/bash
+rm -r dist
+parcel build -d dist src/frame_stacker.js src/frame_stacker.css
+cp -r src/tests dist/
