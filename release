@@ -2,13 +2,10 @@
 [ $# -ne 1 ] && { echo "Usage: $0 version_number"; exit 1; }
 
 release=$1
-
-mkdir releases/$release || exit 2;
-cp dist/*.* releases/$release/
-
-git add releases/$release
+git add dist src
 # Note - will launch editor
 git commit || exit 3;
+
 git tag v$release
 git push
 git push origin v$release
