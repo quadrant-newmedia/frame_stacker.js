@@ -2,9 +2,12 @@
 <html>
 <head>
 	<title>Window Layers Tests</title>
+
+	<!-- TODO - write these tags inside a script with document.write - use query param to decide whether or not to use src or dist -->
 	<link rel="stylesheet" type="text/css" href="/window_layers.css">
-	<link rel="stylesheet" type="text/css" href="./style.css">
 	<script type="module" src='../src/window_layers.js'></script>
+
+	<link rel="stylesheet" type="text/css" href="./style.css">	
 	<script type="module">
 		// make available to inline event handlers via short alias
 		window.wl = window_layers;
@@ -58,33 +61,19 @@
 		})">Open Auto-centering</button>
 	</p>
 
-
+	<h2>Draggable Test</h2>
+	Verify that:
+	<ul>
+		<li>You can drag the window (with mouse or touch screen)</li>
+		<li>The window is cannot be moved out of the viewport</li>
+		<li>You have to start the drag from the target</li>
+	</ul>
 	<p>
-		<button onclick="
-			this.nextElementSibling.focus();
-			window_layers.push('./close_with_button.html');
-		">Click Me</button>
-		<input type="" name="">
-		<br>
-		Was the input's focus restored after window layer was resolved?
-		<button onclick="
-			window.test_utils.log_test(true, 'root window focus is restored after last layer is resolved')
-		">Yes</button>
-		<button onclick="
-			window.test_utils.log_test(false, 'root window focus is restored after last layer is resolved')
-		">No</button>
-	</p>
-
-	<p>
-		<button onclick="
-			wl.push('./auto_sizing_test.html', wl.full_layer, wl.auto_sizing);
-		">Push auto-sizing window</button>
+		<button onclick="wl.push('./draggable.html', wl.auto_centering, wl.shadow_border, wl.draggable, wl.easy_exit)">Open Draggable Window</button>
 	</p>
 
 
-
-
-	<div style="width: 100px;">
+	<div style="width: 400px;">
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
 		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo

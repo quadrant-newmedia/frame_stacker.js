@@ -1,9 +1,11 @@
+import with_default_plugin from './with_default_plugin.js';
+
 function make_spacer(grow) {
     const s = document.createElement('div');
     s.style.flexGrow = grow;
     return s;
 }
-export default function({
+export default with_default_plugin(function({
     wapper_padding='10px',
     bottom_grow=5,
 }={}) {
@@ -31,4 +33,4 @@ export default function({
             w.parentElement.removeChild(w);
         },
     };
-}
+});

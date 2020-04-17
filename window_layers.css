@@ -34,6 +34,8 @@ window-layers-container {
 
 	When there are no iframes open, clicks should pass through.
 	IMPORTANT - there can be no whitespace inside the element, or it will never match :empty
+
+	It would be nice to remove the container entirely when it's empty, but currently we don't actually know when this happens. When we call remove() on the last layer, it is allowed to animate the frame out (and we don't ask it to tell us when it's done).
 */
 window-layers-container:empty {
 	pointer-events: none;

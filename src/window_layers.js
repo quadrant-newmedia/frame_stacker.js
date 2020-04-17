@@ -2,6 +2,7 @@ import * as layer_manager from './layer_manager.js';
 
 import auto_sizing from './plugins/auto_sizing.js';
 import auto_centering from './plugins/auto_centering.js';
+import draggable from './plugins/draggable.js';
 import exit_on_escape from './plugins/exit_on_escape.js';
 import focus_management from './plugins/focus_management.js';
 import full_layer from './plugins/full_layer.js';
@@ -84,7 +85,7 @@ window.window_layers = {
 
 	// other "feature" plugins you may want to use:
 	// TODO - default arguments
-	auto_centering: auto_centering(),
+	auto_centering: auto_centering,
 	auto_sizing: auto_sizing,
 	easy_exit: combine_plugins(
 		exit_on_escape, 
@@ -92,4 +93,7 @@ window.window_layers = {
 	),
 	exit_on_escape: exit_on_escape,
 	shadow_border: shadow_border,
+
+	// WORKS IN PROGRESS:
+	draggable: draggable,
 };
