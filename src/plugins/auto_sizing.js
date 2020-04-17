@@ -106,7 +106,7 @@ export default with_default_plugin(function({
 
 				mainly useful if you don't want to use our watch feature
 			*/
-			iframe.contentDocument.addEventListener('window-layers-should-resize', bound_fix_size);
+			iframe.contentDocument.addEventListener('frame-stacker-should-resize', bound_fix_size);
 
 			/*
 				This will catch any DOM mutation on the entire document element.

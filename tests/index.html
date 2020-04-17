@@ -4,32 +4,32 @@
 	<title>Window Layers Tests</title>
 
 	<!-- TODO - write these tags inside a script with document.write - use query param to decide whether or not to use src or dist -->
-	<link rel="stylesheet" type="text/css" href="/window_layers.css">
-	<script type="module" src='../src/window_layers.js'></script>
+	<link rel="stylesheet" type="text/css" href="../src/frame_stacker.css">
+	<script type="module" src='../src/frame_stacker.js'></script>
 
 	<link rel="stylesheet" type="text/css" href="./style.css">	
 	<script type="module">
 		// make available to inline event handlers via short alias
-		window.wl = window_layers;
+		window.fs = frame_stacker;
 		import * as test_utils from './test_utils.js'
 
 		// short alias, available in inline event handlers
-		window.wl = window_layers;
+		window.fs = frame_stacker;
 
 		(async function() {
-			const wl = window_layers;
+			const fs = frame_stacker;
 
-			// await wl.push(
+			// await fs.push(
 			// 	'./test_child_is_full_size.html',
-			// 	wl.full_layer, test_utils.run_tests,
+			// 	fs.full_layer, test_utils.run_tests,
 			// );
-			// await wl.push(
+			// await fs.push(
 			// 	'./nest_test_1.html',
-			// 	wl.full_layer, test_utils.run_tests,
+			// 	fs.full_layer, test_utils.run_tests,
 			// );
-			// await wl.push(
+			// await fs.push(
 			// 	'./focus_management_1.html',
-			// 	wl.full_layer, test_utils.run_tests,
+			// 	fs.full_layer, test_utils.run_tests,
 			// );
 		})();
 	</script>
@@ -37,7 +37,7 @@
 <body>
 	<h2>Basic/Full Layer Tests</h2>
 	<p>
-		<button onclick="wl.push('./basic_full_layer.html', wl.full_layer)">
+		<button onclick="fs.push('./basic_full_layer.html', fs.full_layer)">
 			Open Full Layer Modal
 		</button>
 	</p>
@@ -51,7 +51,7 @@
 		<li>You can click outside the iframe, or press escape, to exit</li>
 	</ul>
 	<p>
-		<button onclick="wl.push('./user_sizable.html', wl.auto_layer, wl.easy_exit)">Open auto-layer</button>
+		<button onclick="fs.push('./user_sizable.html', fs.auto_layer, fs.easy_exit)">Open auto-layer</button>
 	</p>
 
 
@@ -63,7 +63,7 @@
 		<li>You have to start the drag from the target</li>
 	</ul>
 	<p>
-		<button onclick="wl.push('./draggable.html', wl.auto_centering, wl.shadow_border, wl.draggable, wl.easy_exit)">Open Draggable Window</button>
+		<button onclick="fs.push('./draggable.html', fs.auto_centering, fs.shadow_border, fs.draggable, fs.easy_exit)">Open Draggable Window</button>
 	</p>
 
 

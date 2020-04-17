@@ -5,9 +5,9 @@
     <script type="module">
         import * as test_utils from "./test_utils.js";
         window.focus_wrap_passed = function(passed) {
-            const wl = window.window_layers;
+            const fs = window.frame_stacker;
             test_utils.log_test(passed, 'Focus wraps correctly between items in iframe.');
-            wl.resolve();
+            fs.resolve();
         };
     </script>
 </head>

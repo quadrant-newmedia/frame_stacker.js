@@ -64,18 +64,18 @@ export default {
     // Note that the stored element may be a different iframe, which will have it's own activeElement
     // We don't do a "deep" restore, in case that other iframe is cross origin (in which case, we can't read it's activeElement)
     on_created: function(iframe) {
-        iframe._window_layers_focus_management_previous_parent_active_element = document.activeElement;
+        iframe._frame_stacker_focus_management_previous_parent_active_element = document.activeElement;
     },
     on_resolve: function(value, iframe) {
-        iframe._window_layers_focus_management_previous_parent_active_element.focus();
+        iframe._frame_stacker_focus_management_previous_parent_active_element.focus();
     },
 
     // This pair of functions is responsible for restoring focus within ourselves after we push another window layer
     // It does not work with cross origin iframes
     on_covered: function(iframe) {
-        iframe._window_layers_focus_management_previous_active_element = iframe.contentDocument.activeElement;
+        iframe._frame_stacker_focus_management_previous_active_element = iframe.contentDocument.activeElement;
     },
     on_resumed: function(iframe) {
-        iframe._window_layers_focus_management_previous_active_element.focus();
+        iframe._frame_stacker_focus_management_previous_active_element.focus();
     },
 }

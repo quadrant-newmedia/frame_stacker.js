@@ -11,9 +11,9 @@
 
 	<script>
 		function push_nested() {
-			window_layers.push(
+			frame_stacker.push(
 				'./nest_test_2.html', 
-				window_layers.full_layer,
+				frame_stacker.full_layer,
 				{
 					on_load: function(iframe) {
 						if (window.top && iframe.contentWindow.top == window.top) {
@@ -24,7 +24,7 @@
 						}
 					},
 					on_resolve: function() {
-						window_layers.resolve();
+						frame_stacker.resolve();
 					},
 				}
 			);			

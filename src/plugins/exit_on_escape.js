@@ -9,7 +9,7 @@ export default {
 			var doc = iframe.contentDocument;
 			if (doc.activeElement && doc.activeElement != doc.body) return
 
-			window_layers.resolve();
+			frame_stacker.resolve();
 		});
 	},
 };

@@ -54,11 +54,11 @@ function combine_plugins(...plugins) {
 }
 function validate(plugin) {
 	if (!plugin.create || !plugin.remove) {
-		throw new Error('You must pass at least one plugin that implements create() and one plugin that implements remove() to window_layers.push(). We generally recommend starting with window_layers.full_layer or window_layers.auto_layer.');
+		throw new Error('You must pass at least one plugin that implements create() and one plugin that implements remove() to frame_stacker.push(). We generally recommend starting with frame_stacker.full_layer or frame_stacker.auto_layer.');
 	}
 }
 
-window.window_layers = {
+window.frame_stacker = {
 	push: function(url, ...plugins) {
 		// prepend a fixed set of plugins, which are always used
 		plugins = [focus_management].concat(plugins);

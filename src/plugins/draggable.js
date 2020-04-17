@@ -13,12 +13,12 @@ You can set the transform on the iframe to animate it in/out, but otherwise this
 TODO
 --------------------------------------------------------
 add "move commands" to the window, so users can implement keyboard friendly movement buttons
-(maybe we should listen to arrow key input on [window-layers-drag-target]? might not want to do that if target is body, though)
+(maybe we should listen to arrow key input on [frame-stacker-drag-target]? might not want to do that if target is body, though)
 make clamp optional
 add "clamp margin" option - can be positive or negative - decreases or increases clamp area
 */
 import addDelegatedEventListener from '../addDelegatedEventListener.js';
-const drag_selector = '[window-layers-drag-target]';
+const drag_selector = '[frame-stacker-drag-target]';
 function get_position(event) {
     return (event.touches ? {
         x: event.touches[0].screenX,

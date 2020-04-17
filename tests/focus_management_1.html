@@ -5,14 +5,14 @@
     <script type="module">
         import * as test_utils from "./test_utils.js";
         window.auto_focus_result = function(passed) {
-            const wl = window.window_layers;
+            const fs = window.frame_stacker;
             test_utils.log_test(passed, 'Button with autofocus is focused when new layer is first pushed');
             document.getElementById('focus_restore').focus();
-            wl.push('./focus_management_2.html', wl.full_layer, test_utils.run_tests);
+            fs.push('./focus_management_2.html', fs.full_layer, test_utils.run_tests);
         };
         window.focus_restore_passed = function(passed) {
             test_utils.log_test(passed, 'Focus was restored after layer resolved.');
-            window.window_layers.resolve();
+            window.frame_stacker.resolve();
         };
     </script>
 </head>

@@ -5,7 +5,7 @@
 // 	// TODO - test on_pop can read data from child
 
 (async function() {
-	var wl = window_layers;
+	var fs = frame_stacker;
 
 	var run_tests = {
 		on_load: function(iframe) {
@@ -13,18 +13,18 @@
 		}
 	};
 
-	var x = await wl.push(
-		'./test_child_can_access_window_layers_and_is_not_root.html',
-		wl.full_layer, 
+	var x = await fs.push(
+		'./test_child_can_access_frame_stacker_and_is_not_root.html',
+		fs.full_layer, 
 		run_tests,
 	);
-	x = await wl.push(
+	x = await fs.push(
 		'./test_child_is_full_size.html',
-		wl.full_layer, run_tests,
+		fs.full_layer, run_tests,
 	);
-	x = await wl.push(
+	x = await fs.push(
 		'./nest_test_1.html',
-		wl.full_layer, run_tests,
+		fs.full_layer, run_tests,
 	);
 
 

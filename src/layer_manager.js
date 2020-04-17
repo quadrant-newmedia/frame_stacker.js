@@ -6,12 +6,12 @@
 	We try to implement as few "features" here as possible, leaving those to plugins. Certain features (locks_scroll, exit_on_external_click) require knowlegde about all layers, however, so we have to manage them here.
 */
 function get_container() {
-	var c = document.querySelector('window-layers-container');
+	var c = document.querySelector('frame-stacker-container');
 	if (!c) {
-		c = document.createElement('window-layers-container');
+		c = document.createElement('frame-stacker-container');
 		document.body.append(c);
 	}
-	// TODO - if not at end of body, and no attribute 'window-layers-container-fixed', then move to end of body
+	// TODO - if not at end of body, and no attribute 'frame-stacker-container-fixed', then move to end of body
 	// This is necessary so that layering order is independent of "widget open order"
 	return c;
 }
@@ -21,13 +21,13 @@ function get_iframes() {
 		An iframe "exists" until it is removed from DOM.
 		When we call remove(iframe), it may not be removed synchronously, and we still need to treat it as a layer (ie. if the user clicks on it while it's animating out, we shouldn't start popping other layers underneath it).
 	*/
-	return document.querySelectorAll('window-layers-container iframe');
+	return document.querySelectorAll('frame-stacker-container iframe');
 }
 function get_unresolved_iframes() {
 	return Array.prototype.slice.call(
 		get_iframes()
 	).filter(function(iframe) {
-		return !iframe._window_layers.resolved;
+		return !iframe._frame_stacker.resolved;
 	});
 }
 
@@ -60,9 +60,9 @@ function on_iframe_click(clicked_iframe, event) {
 		event.stopPropagation();
 
 		// This iframe has already been resolved, and in the process of being removed from the DOM
-		if (iframe._window_layers.resolved) continue
+		if (iframe._frame_stacker.resolved) continue
 
-		if (iframe._window_layers.exit_on_external_click) {
+		if (iframe._frame_stacker.exit_on_external_click) {
 			resolve();
 		}
 		else {
@@ -88,7 +88,7 @@ export function push(url, {
 	const active_iframes = get_unresolved_iframes();
 	const current_top = active_iframes[active_iframes.length-1];
 	if (current_top) {
-		current_top._window_layers.on_covered(current_top);
+		current_top._frame_stacker.on_covered(current_top);
 	}
 
 	if (lock_scroll) {
@@ -100,7 +100,7 @@ export function push(url, {
 
 	const iframe = create(get_container());
 	on_created(iframe);
-	iframe._window_layers = {
+	iframe._frame_stacker = {
 		on_covered: on_covered,
 		on_resumed: on_resumed,
 		exit_on_external_click: exit_on_external_click,
@@ -113,7 +113,7 @@ export function push(url, {
 	try {
 		promise = new Promise(
 			function(resolve, reject) {
-				iframe._window_layers.resolve = resolve;
+				iframe._frame_stacker.resolve = resolve;
 			}
 		)
 	}
@@ -123,15 +123,15 @@ export function push(url, {
 	iframe.addEventListener('load', function() {
 		const w = iframe.contentWindow;
 		/*
-			Make window_layers available inside the iframe, even if it didn't include the script
+			Make frame_stacker available inside the iframe, even if it didn't include the script
 
 			Patch the object so that push() and resolve() act on the "root window".
 
-			Intentionally do NOT overwrite the entire object. If the child page includes a different version of window_layers with different plugins available, it should still be able to use those.
+			Intentionally do NOT overwrite the entire object. If the child page includes a different version of frame_stacker with different plugins available, it should still be able to use those.
 		*/
-		w.window_layers = w.window_layers || window.window_layers;
-		w.window_layers.push = window.window_layers.push;
-		w.window_layers.resolve = window.window_layers.resolve;
+		w.frame_stacker = w.frame_stacker || window.frame_stacker;
+		w.frame_stacker.push = window.frame_stacker.push;
+		w.frame_stacker.resolve = window.frame_stacker.resolve;
 
 		// These are required for implementing "exit_on_external_click"
 		iframe.contentDocument.addEventListener('click', on_iframe_click.bind(null, iframe), true);
@@ -156,22 +156,22 @@ export function resolve(value) {
 
 	const iframe = iframes.pop();
 	if (!iframe) return;
-	iframe._window_layers.resolved = true;
+	iframe._frame_stacker.resolved = true;
 
-	if (iframe._window_layers.lock_scroll) {
+	if (iframe._frame_stacker.lock_scroll) {
 		scroll_locking_layers_count--;
 		if (scroll_locking_layers_count == 0) {
 			removeEventListener('scroll', fix_scroll);
 		}
 	}
 
-	if (iframe._window_layers.resolve) {
-		iframe._window_layers.resolve(value);
+	if (iframe._frame_stacker.resolve) {
+		iframe._frame_stacker.resolve(value);
 	}
-	iframe._window_layers.on_resolve(value, iframe);
-	iframe._window_layers.remove(iframe, get_container());
+	iframe._frame_stacker.on_resolve(value, iframe);
+	iframe._frame_stacker.remove(iframe, get_container());
 
 	const next_top = iframes.pop();
 	if (!next_top) return
-	next_top._window_layers.on_resumed(next_top);
+	next_top._frame_stacker.on_resumed(next_top);
 }
