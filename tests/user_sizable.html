@@ -9,6 +9,10 @@
     <textarea></textarea>
     <p><button onclick="location.reload();">Click Here</button> to reload this iframe and verify that it resizes again on load.</p>
 
+    <p><button onclick="
+        var fs = frame_stacker;
+        fs.push('./basic_full_layer.html', fs.full_layer);
+    ">Open full layer</button></p>
 
     <p>Use arrow keys to resize iframe.</p>
     <script type="text/javascript">
