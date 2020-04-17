@@ -9,29 +9,8 @@
 
 	<link rel="stylesheet" type="text/css" href="./style.css">	
 	<script type="module">
-		// make available to inline event handlers via short alias
-		window.fs = frame_stacker;
-		import * as test_utils from './test_utils.js'
-
 		// short alias, available in inline event handlers
 		window.fs = frame_stacker;
-
-		(async function() {
-			const fs = frame_stacker;
-
-			// await fs.push(
-			// 	'./test_child_is_full_size.html',
-			// 	fs.full_layer, test_utils.run_tests,
-			// );
-			// await fs.push(
-			// 	'./nest_test_1.html',
-			// 	fs.full_layer, test_utils.run_tests,
-			// );
-			// await fs.push(
-			// 	'./focus_management_1.html',
-			// 	fs.full_layer, test_utils.run_tests,
-			// );
-		})();
 	</script>
 </head>
 <body>

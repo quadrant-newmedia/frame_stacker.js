@@ -15,9 +15,14 @@
             <li>The "Close" button below auto-focuses</li>
             <li>If you <button onclick="location.reload()">click this button</button>, the iframe will reload and the "Close" button will be re-focused</li>
             <li>If you press tab (or shift+tab), focus will wrap between the inputs in this iframe</li>
+            <li>You can click the "Push nested child" button to push another layer.</li>
             <li>After closing this window, the button you clicked to open it will be re-focused</li>
         </ol>
-        <button autofocus onclick="frame_stacker.resolve(99);">Close</button><input type="" name=""><input>
+        <button autofocus onclick="frame_stacker.resolve(99);">Close</button>
+        <button onclick="
+            var fs = frame_stacker;
+            fs.push('./user_sizable.html', fs.auto_layer, fs.easy_exit);
+        ">Push nested child</button>
     </main>
 </body>
 </html>
