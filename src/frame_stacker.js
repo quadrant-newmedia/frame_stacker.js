@@ -1,7 +1,7 @@
 import * as layer_manager from './layer_manager.js';
 
 import auto_sizing from './plugins/auto_sizing.js';
-import auto_centering from './plugins/auto_centering.js';
+import auto_centering_layer from './plugins/auto_centering_layer.js';
 import draggable from './plugins/draggable.js';
 import edge_snapping_layer from './plugins/edge_snapping_layer.js';
 import edge_snapping_buttons from './plugins/edge_snapping_buttons.js';
@@ -44,11 +44,29 @@ function combine_plugins(...plugins) {
 			The iframe must be inserted into the container, possibly with wrapper elements.
 		*/
 		create: get_first_defined(plugins, 'create'),
+		/*
+			At least one plugin must deine this.
+			Must take the iframe as an argument and remove it from the dom.
+			It doesn't need to remove it synchronously - it may, for example, animate it off-screen and then remove it.
+		*/
 		remove: get_first_defined(plugins, 'remove'),
 
+		/* 
+			If set, close the layer when the user clicks anywhere outside of the iframe
+		*/
 		exit_on_external_click: get_first_defined(plugins, 'exit_on_external_click'),
+		/*
+			Whether or not to lock the scroll position of the document while this layer is open
+			Full-page layers will probably want to set it, others may or may not
+		*/
 		lock_scroll: get_first_defined(plugins, 'lock_scroll'),
 
+		/*
+			Callbacks - pretty self explanatory.
+			Each is called with iframe as the sole argument, with the exception of:
+				on_load(iframe, first_load) -> first_load is boolean, true if this is the first page load
+				on_resolve(value, iframe) -> value is whatever value was passed to frame_stacker.resolve()
+		*/
 		on_created: execute_all(plugins, 'on_created'),
 		on_load: execute_all(plugins, 'on_load'),
 		on_covered: execute_all(plugins, 'on_covered'),
@@ -69,8 +87,11 @@ window.frame_stacker = {
 
 		const plugin = combine_plugins(...plugins);
 		validate(plugin);
+
+		// TODO - document the returned promise (or should we just drop it altogether?)
 		return layer_manager.push(url, plugin);
 	},
+	// Note - value is optional, and will be passed to the on_resove() callback
 	resolve: function(value) {
 		return layer_manager.resolve(value);
 	},
@@ -81,17 +102,16 @@ window.frame_stacker = {
 	// Most of the time, you'll use one of these as your "base" plugin
 	full_layer: full_layer,
 	auto_layer: combine_plugins(
-		// TODO: rename auto_centering to auto_centering_layer -> _layer means create/remove are implemented
-		auto_centering, 
+		auto_centering_layer, 
 		auto_sizing, 
 		shadow_border
 	),
 	edge_snapping_layer: edge_snapping_layer,
 
-	// other "feature" plugins you may want to use:
-	// TODO - 
-	auto_centering: auto_centering,
+	// other plugins you may want to use:
+	auto_centering_layer: auto_centering_layer,
 	auto_sizing: auto_sizing,
+	draggable: draggable,
 	easy_exit: combine_plugins(
 		exit_on_escape, 
 		{exit_on_external_click: true},
@@ -99,7 +119,4 @@ window.frame_stacker = {
 	edge_snapping_buttons: edge_snapping_buttons,
 	exit_on_escape: exit_on_escape,
 	shadow_border: shadow_border,
-
-	// WORKS IN PROGRESS:
-	draggable: draggable,
 };

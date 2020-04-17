@@ -47,6 +47,16 @@
 	</style>
 </head>
 <body>
+	<script>
+		if (/src\/tests\/$/.test(location.pathname)) {
+			document.write('<a href="/dist/tests/">Test dist code</a>');
+		}
+		else {
+			document.write('<a href="/src/tests/">Test src code</a>');
+		}
+	</script>
+	
+
 	<h2>Basic/Full Layer Tests</h2>
 	<p>
 		<button onclick="fs.push('./basic_full_layer.html', fs.full_layer)">
@@ -57,8 +67,8 @@
 	<h2>Auto-Layer</h2>
 	Resize the textare inside the iframe and verify that:
 	<ul>
-		<li>Height is bounded (and respects the "wrapper_padding" value passed to auto_centering)</li>
-		<li>Width is bounded (and respects the "wrapper_padding" value passed to auto_centering)</li>
+		<li>Height is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
+		<li>Width is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
 		<li>Iframe shifts toward top of viewport when small - looks more balanced that way, closer to how alert() windows look</li>
 		<li>You can click outside the iframe, or press escape, to exit</li>
 	</ul>
@@ -85,7 +95,7 @@
 		<li>You have to start the drag from the target</li>
 	</ul>
 	<p>
-		<button onclick="fs.push('./draggable.html', fs.auto_centering, fs.shadow_border, fs.draggable, fs.easy_exit)">Open Draggable Window</button>
+		<button onclick="fs.push('./draggable.html', fs.auto_centering_layer, fs.shadow_border, fs.draggable, fs.easy_exit)">Open Draggable Window</button>
 	</p>
 
 
