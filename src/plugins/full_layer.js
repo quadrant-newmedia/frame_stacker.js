@@ -14,8 +14,8 @@ export default {
 		container.appendChild(iframe);
 		return iframe;
 	},
-	on_first_load: function(iframe) {
-		iframe.style.opacity = '1';
+	on_load: function(iframe, first_load) {
+		if (first_load) iframe.style.opacity = '1';
 	},
 	lock_scroll: true,
 	remove: function(iframe, container) {

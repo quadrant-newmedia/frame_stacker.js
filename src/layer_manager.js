@@ -76,7 +76,6 @@ document.addEventListener('click', on_iframe_click.bind(null, null), true);
 export function push(url, {
 	create,
 	on_created,
-	on_first_load,
 	on_load,
 	on_covered,
 	on_resumed,
@@ -136,11 +135,8 @@ export function push(url, {
 		// These are required for implementing "exit_on_external_click"
 		iframe.contentDocument.addEventListener('click', on_iframe_click.bind(null, iframe), true);
 
-		if (first_load) {
-			on_first_load(iframe);
-			first_load = false;
-		}
-		on_load(iframe);
+		on_load(iframe, first_load);
+		first_load = false;
 	});
 
 	iframe.src = url;

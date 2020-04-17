@@ -27,6 +27,24 @@
 		// short alias, available in inline event handlers
 		window.fs = frame_stacker;
 	</script>
+
+	<style>
+		body {
+			background-color: white;
+		}
+		.EdgeSnapperBar {
+			position: sticky;
+			top: 0;
+			display: flex;
+			justify-content: center;
+			border-bottom: 1px solid #aaa;
+			background-color: white;
+		}
+		.EdgeSnapperBar > button {
+			margin: 5px;
+		}
+
+	</style>
 </head>
 <body>
 	<h2>Basic/Full Layer Tests</h2>
@@ -48,6 +66,16 @@
 		<button onclick="fs.push('./user_sizable.html', fs.auto_layer, fs.easy_exit)">Open auto-layer</button>
 	</p>
 
+	<h2>Edge-snapping layer</h2>
+	<p>
+		<button onclick="fs.push(
+			'.', 
+			fs.edge_snapping_layer, 
+			fs.edge_snapping_buttons,
+			fs.shadow_border,
+			fs.easy_exit,
+		)">Open edge-snapping layer</button>
+	</p>
 
 	<h2>Draggable Test</h2>
 	Verify that:

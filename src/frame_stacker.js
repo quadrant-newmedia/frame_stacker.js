@@ -3,6 +3,8 @@ import * as layer_manager from './layer_manager.js';
 import auto_sizing from './plugins/auto_sizing.js';
 import auto_centering from './plugins/auto_centering.js';
 import draggable from './plugins/draggable.js';
+import edge_snapping_layer from './plugins/edge_snapping_layer.js';
+import edge_snapping_buttons from './plugins/edge_snapping_buttons.js';
 import exit_on_escape from './plugins/exit_on_escape.js';
 import focus_management from './plugins/focus_management.js';
 import full_layer from './plugins/full_layer.js';
@@ -16,8 +18,11 @@ function execute_all(plugins, function_name) {
 	).filter(Boolean);
 	return function() {
 		for (var i = 0; i < functions.length; i++) {
-			// TODO - should we catch and log exceptions, and continue iteration?
-			functions[i].apply(null, arguments);
+			try {
+				functions[i].apply(null, arguments);
+			} catch(e) {
+				console.error(e);
+			}
 		}
 	}
 }
@@ -45,7 +50,6 @@ function combine_plugins(...plugins) {
 		lock_scroll: get_first_defined(plugins, 'lock_scroll'),
 
 		on_created: execute_all(plugins, 'on_created'),
-		on_first_load: execute_all(plugins, 'on_first_load'),
 		on_load: execute_all(plugins, 'on_load'),
 		on_covered: execute_all(plugins, 'on_covered'),
 		on_resumed: execute_all(plugins, 'on_resumed'),
@@ -74,23 +78,25 @@ window.frame_stacker = {
 	// End users may want to call this to combine a commonly used set of plugins 
 	combine_plugins: combine_plugins,
 
-	// Most of the time, you'll use one of these two as your "base" plugin
-	// TODO - rename? full_layer?
+	// Most of the time, you'll use one of these as your "base" plugin
 	full_layer: full_layer,
 	auto_layer: combine_plugins(
+		// TODO: rename auto_centering to auto_centering_layer -> _layer means create/remove are implemented
 		auto_centering, 
 		auto_sizing, 
 		shadow_border
 	),
+	edge_snapping_layer: edge_snapping_layer,
 
 	// other "feature" plugins you may want to use:
-	// TODO - default arguments
+	// TODO - 
 	auto_centering: auto_centering,
 	auto_sizing: auto_sizing,
 	easy_exit: combine_plugins(
 		exit_on_escape, 
 		{exit_on_external_click: true},
 	),
+	edge_snapping_buttons: edge_snapping_buttons,
 	exit_on_escape: exit_on_escape,
 	shadow_border: shadow_border,
 
