@@ -23,7 +23,7 @@ function execute_all(plugins, function_name) {
 }
 function get_first_defined(plugins, property) {
 	for (var i = 0; i < plugins.length; i++) {
-		if (property in plugins[i]) {
+		if (property in plugins[i] && typeof plugins[i][property] !== 'undefined') {
 			return plugins[i][property];
 		}
 	}

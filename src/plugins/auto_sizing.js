@@ -18,20 +18,34 @@ function get_interior_border_height(computed_style) {
 		parseFloat(computed_style.borderBottomHeight)
 	);
 }
-function fix_size(iframe, width, height, document, body_style, iframe_style) {
+function fix_size(iframe, width, height, document, body_style, iframe_style, adjust_overflowy) {
+	let is_limited = false;
 	if (height) {
-		iframe.style.height = (
-			Math.ceil(document.documentElement.offsetHeight) +
-			get_interior_border_height(iframe_style)
-		) + 'px';
+		const required_height = Math.ceil(document.documentElement.offsetHeight) + get_interior_border_height(iframe_style);
+		iframe.style.height = required_height + 'px';
+
+		/*
+			With this turned off, if you smoothly adjust the document height, then you run into issues.
+			As soon as you increase height, before we can adjust the iframe, a vertical scroll bar will appear.
+			This can cause body content to wrap and make height increase.
+			The result is rather unstable/jittering size adjustments.
+
+			Setting overflow-y on the document may have unintended consequences, so we allow the user to turn this feature off.
+		*/
+		if (adjust_overflowy) {
+			const overflows = parseInt(iframe_style.height) < required_height;
+			document.documentElement.style.overflowY = overflows ? 'scroll' : 'hidden';
+		}
 	}
 	if (width) {
+		const vertical_scrollbar_width = iframe.contentWindow.innerWidth - document.documentElement.offsetWidth;
 		iframe.style.width = (
 			Math.ceil(
+				vertical_scrollbar_width +
 				parseFloat(body_style.marginLeft) +
 				parseFloat(body_style.marginRight) +
 				parseFloat(body_style.width)
-			) + get_interior_border_height(iframe_style)
+			) + get_interior_border_width(iframe_style)
 		) + 'px';
 	}
 }
@@ -40,6 +54,7 @@ export default with_default_plugin(function({
 	width=true,
 	height=true,
 	watch=true,
+	adjust_overflowy=true,
 }={}) {
 	let iframe_style;
 	return {
@@ -82,7 +97,7 @@ export default with_default_plugin(function({
 				I'm assuming getComputedStyle is somewhat expensive, so don't call unless we're actually setting iframe width
 			*/
 			const body_style = width ? getComputedStyle(doc.body) : null;
-			const bound_fix_size = fix_size.bind(null, iframe, width, height, doc, body_style, iframe_style);
+			const bound_fix_size = fix_size.bind(null, iframe, width, height, doc, body_style, iframe_style, adjust_overflowy);
 
 			bound_fix_size();
 

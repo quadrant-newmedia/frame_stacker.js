@@ -42,24 +42,18 @@
 		</button>
 	</p>
 
-	<h2>Auto-centering Layer</h2>
-	Resize the iframe and verify that:
+	<h2>Auto-Layer</h2>
+	Resize the textare inside the iframe and verify that:
 	<ul>
 		<li>Height is bounded (and respects the "wrapper_padding" value passed to auto_centering)</li>
 		<li>Width is bounded (and respects the "wrapper_padding" value passed to auto_centering)</li>
 		<li>Iframe shifts toward top of viewport when small - looks more balanced that way, closer to how alert() windows look</li>
+		<li>You can click outside the iframe, or press escape, to exit</li>
 	</ul>
 	<p>
-		<button onclick="wl.push('./user_sizable.html', wl.auto_centering, wl.shadow_border, wl.easy_exit, {
-			on_created: function(iframe) {
-				iframe.style.width = '300px';
-				iframe.style.height = '200px';
-			},
-			on_load: function(iframe) {
-				iframe.contentWindow.iframe = iframe;
-			},
-		})">Open Auto-centering</button>
+		<button onclick="wl.push('./user_sizable.html', wl.auto_layer, wl.easy_exit)">Open auto-layer</button>
 	</p>
+
 
 	<h2>Draggable Test</h2>
 	Verify that:
