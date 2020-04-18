@@ -37,6 +37,9 @@ frame-stacker-container:empty {
 	plugins may decide to wrap iframe in other elements, and those may extend beyond the iframe. If so, clicks on those wrapper elements should fall through - they should not be interactive in any way.
 	
 	When any iframe layers are open, all clicks should either land on one of the iframes or on the frame-stacker-container. This way we can be sure to handle all click events, and know which layer the user intended to click on.
+
+	Explanation:
+	Suppose one large alert-style window is open(with exit_on_external_click=True), and then it pushes another smaller layer (also with exit_on_external_click=True). If the user now clicks outside the small window on the larger, bottom window, then we should close the small window and re-focus the larger one. However, if the small window adds a full-page wrapper element around itself (ie. for positioning), and if that element captures click events, then we wouldn't be able to tell that the aforementioned click was actually on the first iframe. All clicks would either fire on the top iframe or its wrapper element, so there would be no way to distinguish between clicks on the bottom iframe vs clicks on the base document. 
 */
 frame-stacker-container > * {
 	pointer-events: none;
