@@ -3,23 +3,22 @@
 <head>
 	<title>Window Layers Tests</title>
 
-	<link rel="stylesheet" type="text/css" href="../frame_stacker.css">
-	<link rel="stylesheet" type="text/css" href="./style.css">	
+	<link rel="stylesheet" type="text/css" href="./style.css">
 
-	<!-- 
-		When testing the raw javascript module code, we need to load the code with type="module"
-
-		When testing the bundled code, we need to load the script normally (type="text/javascript").
-		This is because the bundles produced by parcel.js do not work in strict mode.
-
-		Also, even if the output of parcel didn't require this, we should TEST it the way end users are meant to load it.
-	 -->
 	<script type="text/javascript">
-		if (/src\/tests\/$/.test(location.pathname)) {
-			document.write('<script type="module" src="../frame_stacker.js"><\/script>');
+		window.src_mode = /demo\/src\/$/.test(location.pathname)
+
+		if (src_mode) {
+			// include src script, as js module
+			document.write('<script type="module" src="/src/frame_stacker.js"><\/script>');
+			document.write('<link rel="stylesheet" type="text/css" href="/src/frame_stacker.css">');
 		}
 		else {
-			document.write('<script defer src="../frame_stacker.js"><\/script>');
+			// we use parcel.js to bundle our code
+			// the bundles that parcel produces do NOT work in strict mode
+			// therefore, we must load this a regular script, NOT module
+			document.write('<script defer src="/dist/frame_stacker.js"><\/script>');
+			document.write('<link rel="stylesheet" type="text/css" href="/dist/frame_stacker.css">')
 		}
 	</script>
 
@@ -47,15 +46,50 @@
 	</style>
 </head>
 <body>
-	<script>
-		if (/src\/tests\/$/.test(location.pathname)) {
-			document.write('<a href="/dist/tests/">Test dist code</a>');
-		}
-		else {
-			document.write('<a href="/src/tests/">Test src code</a>');
-		}
-	</script>
-	
+	<aside>Testing 
+		<script>
+			if (src_mode) {
+				document.write('src code. <a href="/demo/dist/">Test dist code</a>.');
+			}
+			else {
+				document.write('dist code. <a href="/demo/src/">Test src code</a>.');
+			}
+		</script>
+		<a href="https://github.com/quadrant-newmedia/frame_stacker.js">View on GitHub</a>.
+	</aside>
+
+	<h1>frame_stacker.js</h1>
+
+	<p>This is a helper library for managing iframe-based modal dialogs/overlays (hereinafter known as "frames").</p>
+
+	<p>Frames are nestable and customizable. All frames automatically take care of:</p>
+	<ul>
+		<li>focus management</li>
+		<li>blocking clicks outside of the top-most frame</li>
+		<li>layering and z-index issues</li>
+	</ul>
+
+	<h2>Documentation</h2>
+	<p>This document serves as both the test page and documentation for this project.</p> 
+	<p>Most button handlers are implemented in-line, so you can easily inspect exactly what code they are running. Note that we've created a short alias for frame_stacker on this page via:
+	<blockquote><code>window.fs = window.frame_stacker;</code></blockquote>
+	<p>Some features are documented more thoroughly in the source code than they are here. Where relevant, we link directly to the source from this document. Feel free to clone the whole project, if you find it easier to read a local copy of the code.</p>
+
+	<h2>Installation</h2>
+	<p>Go to the <a href="https://github.com/quadrant-newmedia/frame_stacker.js">repo on GiHub</a> and clone the entire project or download one of the directories in "releases".</p>
+	<p>Add the script and stylesheet to your "base page" and you're ready to go. You do not need to add the script or stylesheet to your iframe pages.</p>
+
+	<h2>Basic Usage</h2>
+	<p>Call <code>frame_stacker.push(url, plugin, other_plugin, ...)</code> to create a new frame.</p>
+	<p>Call <code>frame_stacker.resolve([value])</code> to close the frame (you can call this from either the parent window or inside the iframe).</p>
+	<button onclick="fs.push('./basic_close.html', fs.full_layer);">Open Frame</button>
+
+
+
+
+
+
+	<p>Frames are nestable. </p>
 
 	<h2>Basic/Full Layer Tests</h2>
 	<p>

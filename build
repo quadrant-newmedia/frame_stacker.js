@@ -1,4 +1,4 @@
 #!/bin/bash
 rm -r dist
-parcel build -d dist src/frame_stacker.js src/frame_stacker.css
+node_modules/.bin/parcel build --public-url ./ -d dist src/frame_stacker.js src/frame_stacker.css
 cp -r src/tests dist/

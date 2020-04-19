@@ -1,2 +1,3 @@
 # Treat dist as binary
 dist/ -diff
+releases/ -diff

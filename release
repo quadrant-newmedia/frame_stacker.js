@@ -2,9 +2,22 @@
 [ $# -ne 1 ] && { echo "Usage: $0 version_number"; exit 1; }
 
 release=$1
-git add dist src
-# Note - will launch editor
-git commit || exit 3;
+release_dir="releases/$1"
+# message="/*! frame_stacker.js v$release | (c) Quadrant Newmedia Corporation | https://github.com/quadrant-newmedia/frame_stacker.js */"
+message="/*! 
+	frame_stacker.js v$release
+	(c) Quadrant Newmedia Corporation
+	https://github.com/quadrant-newmedia/frame_stacker.js 
+*/"
+
+mkdir $release_dir || exit 1;
+cp dist/* $release_dir || exit 1;
+cat <(echo "$message") dist/frame_stacker.js > $release_dir/frame_stacker.js || exit 1;
+cat <(echo "$message") dist/frame_stacker.css > $release_dir/frame_stacker.css || exit 1;
+
+git add dist src $release_dir || exit 1;
+# Note - will launch editor - user can abandon if desired
+git commit || exit 1;
 
 git tag v$release
 git push
