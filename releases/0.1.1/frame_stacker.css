@@ -1,0 +1,7 @@
+/*! 
+	frame_stacker.js v0.1.1
+	(c) Quadrant Newmedia Corporation
+	https://github.com/quadrant-newmedia/frame_stacker.js 
+*/
+frame-stacker-container{display:block;position:fixed;top:0;left:0;height:100%;width:100%}frame-stacker-container:empty,frame-stacker-container>*{pointer-events:none}frame-stacker-container iframe{pointer-events:auto}
+/*# sourceMappingURL=/frame_stacker.css.map */
