@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Window Layers Tests</title>
+
+	<link rel="stylesheet" type="text/css" href="./style.css">	
+
+	<!-- 
+		When testing the raw javascript module code, we need to load the code with type="module"
+
+		When testing the bundled code, we need to load the script normally (type="text/javascript").
+		This is because the bundles produced by parcel.js do not work in strict mode.
+
+		Also, even if the output of parcel didn't require this, we should TEST it the way end users are meant to load it.
+	 -->
+	<script type="text/javascript">
+		if (/src\/tests\/$/.test(location.pathname)) {
+			document.write('<script type="module" src="../frame_stacker.js"><\/script>');
+		}
+		else {
+			document.write('<script defer src="../frame_stacker.js"><\/script>');
+		}
+	</script>
+
+	<script type="module">
+		// short alias, available in inline event handlers
+		window.fs = frame_stacker;
+	</script>
+
+	<style>
+		body {
+			background-color: white;
+		}
+		.EdgeSnapperBar {
+			position: sticky;
+			top: 0;
+			display: flex;
+			justify-content: center;
+			border-bottom: 1px solid #aaa;
+			background-color: white;
+		}
+		.EdgeSnapperBar > button {
+			margin: 5px;
+		}
+
+	</style>
+</head>
+<body>
+	<script>
+		if (/src\/tests\/$/.test(location.pathname)) {
+			document.write('<a href="/dist/tests/">Test dist code</a>');
+		}
+		else {
+			document.write('<a href="/src/tests/">Test src code</a>');
+		}
+	</script>
+	
+
+	<h2>Basic/Full Layer Tests</h2>
+	<p>
+		<button onclick="fs.push('./basic_full_layer.html', fs.full_layer)">
+			Open Full Layer Modal
+		</button>
+	</p>
+
+	<h2>Auto-Layer</h2>
+	Resize the textare inside the iframe and verify that:
+	<ul>
+		<li>Height is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
+		<li>Width is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
+		<li>Iframe shifts toward top of viewport when small - looks more balanced that way, closer to how alert() windows look</li>
+		<li>You can click outside the iframe, or press escape, to exit</li>
+	</ul>
+	<p>
+		<button onclick="fs.push('./user_sizable.html', fs.auto_layer, fs.easy_exit)">Open auto-layer</button>
+	</p>
+
+	<h2>Edge-snapping layer</h2>
+	<p>
+		<button onclick="fs.push(
+			'.', 
+			fs.edge_snapping_layer, 
+			fs.edge_snapping_buttons,
+			fs.shadow_border,
+			fs.easy_exit,
+		)">Open edge-snapping layer</button>
+	</p>
+
+	<h2>Draggable Test</h2>
+	Verify that:
+	<ul>
+		<li>You can drag the window (with mouse or touch screen)</li>
+		<li>The window is cannot be moved out of the viewport</li>
+		<li>You have to start the drag from the target</li>
+	</ul>
+	<p>
+		<button onclick="fs.push('./draggable.html', fs.auto_centering_layer, fs.shadow_border, fs.draggable, fs.easy_exit)">Open Draggable Window</button>
+	</p>
+
+
+	<div style="width: 400px;">
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	</div>
+</body>
+</html>

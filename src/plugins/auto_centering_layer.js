@@ -20,6 +20,7 @@ export default with_default_plugin(function({
 }={}) {
     return {
         create: function(container) {
+            // TODO - we no longer need this wrapper - we can set display:flex directly on container
             const w = document.createElement('div');
             container.appendChild(w);
             w.style = `
@@ -33,9 +34,13 @@ export default with_default_plugin(function({
             w.appendChild(make_spacer(1));
             const iframe = document.createElement('iframe');
             iframe.style.maxWidth = '100%';
+            iframe.style.opacity = 0;
             w.appendChild(iframe);
             w.appendChild(make_spacer(bottom_grow));
             return iframe
+        },
+        on_load: function(iframe, first_load) {
+            if (first_load) iframe.style.opacity = '1';
         },
         remove: function(iframe) {
             const w = iframe.parentElement;
