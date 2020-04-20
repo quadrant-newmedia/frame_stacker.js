@@ -5,23 +5,44 @@
 
 	We try to implement as few "features" here as possible, leaving those to plugins. Certain features (locks_scroll, exit_on_external_click) require knowlegde about all layers, however, so we have to manage them here.
 */
-function get_container() {
-	var c = document.querySelector('frame-stacker-container');
-	if (!c) {
-		c = document.createElement('frame-stacker-container');
-		document.body.append(c);
-	}
-	// TODO - if not at end of body, and no attribute 'frame-stacker-container-fixed', then move to end of body
-	// This is necessary so that layering order is independent of "widget open order"
+
+const global_container = document.createElement('div');
+global_container.style = `
+	position: fixed;
+	top: 0; left: 0; height: 100%; width: 100%;
+`;
+// TODO - support browsers who don't support position: fixed (ie. Opera mini)
+// If style.position != 'fixed', changed to absolute, set width/height manually, add scroll listener to set top/left
+function get_iframe_container() {
+	// ensure global_container is in DOM, at end of body
+	document.body.appendChild(global_container);
+	const c = document.createElement('div');
+	c.style = `
+		position: absolute; 
+		top: 0; left: 0; width: 100%; height: 100%;
+		pointer-events: none;
+	`;
+	global_container.appendChild(c);
 	return c;
 }
+function cleanup_after_iframe_removal(iframe_container) {
+	iframe_container.parentElement && iframe_container.parentElement.removeChild(iframe_container);
+	/*
+		When the last iframe has been removed from the global_container,
+		remove the global_container from the DOM.
+		This is important, because the global_container intercepts click events.
+	*/
+	if (global_container.querySelector('iframe')) return
+	global_container.parentElement.removeChild(global_container);
+}
+
 function get_iframes() {
 	/*
 		Note - we intentionally use DOM as source of truth here.
 		An iframe "exists" until it is removed from DOM.
 		When we call remove(iframe), it may not be removed synchronously, and we still need to treat it as a layer (ie. if the user clicks on it while it's animating out, we shouldn't start popping other layers underneath it).
 	*/
-	return document.querySelectorAll('frame-stacker-container iframe');
+	return global_container.querySelectorAll('iframe');
 }
 function get_unresolved_iframes() {
 	return Array.prototype.slice.call(
@@ -97,7 +118,10 @@ export function push(url, {
 		addEventListener('scroll', fix_scroll);
 	}
 
-	const iframe = create(get_container());
+	const container = get_iframe_container();
+	const iframe = create(container);
+	iframe.style.pointerEvents = 'auto';
+
 	on_created(iframe);
 	iframe._frame_stacker = {
 		on_covered: on_covered,
@@ -107,6 +131,7 @@ export function push(url, {
 		on_resolve: on_resolve,
 		remove: remove,
 		resolved: false,
+		container: container,
 	}
 	let promise;
 	try {
@@ -161,11 +186,15 @@ export function resolve(value) {
 		}
 	}
 
+	// Note - the iframe will be unloaded when the user removes it from the DOM via remove()
+	const container = iframe._frame_stacker.container;
+	iframe.contentWindow.addEventListener('unload', cleanup_after_iframe_removal.bind(null, container));
+
 	if (iframe._frame_stacker.resolve) {
 		iframe._frame_stacker.resolve(value);
 	}
 	iframe._frame_stacker.on_resolve(value, iframe);
-	iframe._frame_stacker.remove(iframe, get_container());
+	iframe._frame_stacker.remove(iframe, container);
 
 	const next_top = iframes.pop();
 	if (!next_top) return

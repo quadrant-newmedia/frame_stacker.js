@@ -42,12 +42,16 @@ function combine_plugins(...plugins) {
 			At least one plugin must define this.
 			Must accept container element and return an iframe element.
 			The iframe must be inserted into the container, possibly with wrapper elements.
+
+			TODO - documentation - user may mutate/animate the container
 		*/
 		create: get_first_defined(plugins, 'create'),
 		/*
 			At least one plugin must deine this.
 			Must take the iframe as an argument and remove it from the dom.
 			It doesn't need to remove it synchronously - it may, for example, animate it off-screen and then remove it.
+
+			TODO - documentation - function also receives container, only requirement is to remove iframe, container will be removed as soon as iframe is removed
 		*/
 		remove: get_first_defined(plugins, 'remove'),
 
