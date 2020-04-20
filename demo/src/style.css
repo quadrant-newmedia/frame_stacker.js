@@ -1,7 +1,19 @@
 html {
-    font: 16px sans-serif;
+    font: 14px sans-serif;
     line-height: 1.6;
 }
 button:focus {
     /*outline: 2px solid blue;*/
+}
+code {
+	background-color: #eee;
+	border: 1px solid #aaa;
+	padding: 0 5px;
+}
+.AttrDemoCode {
+	display: block;
+	border: none;
+	border-left: 1px solid #aaa;
+	background-color: transparent;
+	white-space: pre-wrap;
 }

@@ -1,169 +1,189 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Window Layers Tests</title>
+    <title>Window Layers Tests</title>
 
-	<link rel="stylesheet" type="text/css" href="./style.css">
+    <script type="text/javascript">
+        window.src_mode = /demo\/src\/$/.test(location.pathname)
 
-	<script type="text/javascript">
-		window.src_mode = /demo\/src\/$/.test(location.pathname)
+        if (src_mode) {
+            // include src script, as js module
+            document.write('<script type="module" src="/src/frame_stacker.js"><\/script>');
+            document.write('<link rel="stylesheet" type="text/css" href="/src/frame_stacker.css">');
+        }
+        else {
+            // we use parcel.js to bundle our code
+            // the bundles that parcel produces do NOT work in strict mode
+            // therefore, we must load this a regular script, NOT module
+            document.write('<script defer src="/dist/frame_stacker.js"><\/script>');
+            document.write('<link rel="stylesheet" type="text/css" href="/dist/frame_stacker.css">')
+        }
+    </script>
 
-		if (src_mode) {
-			// include src script, as js module
-			document.write('<script type="module" src="/src/frame_stacker.js"><\/script>');
-			document.write('<link rel="stylesheet" type="text/css" href="/src/frame_stacker.css">');
-		}
-		else {
-			// we use parcel.js to bundle our code
-			// the bundles that parcel produces do NOT work in strict mode
-			// therefore, we must load this a regular script, NOT module
-			document.write('<script defer src="/dist/frame_stacker.js"><\/script>');
-			document.write('<link rel="stylesheet" type="text/css" href="/dist/frame_stacker.css">')
-		}
-	</script>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <script defer src="/test_utils.js"></script>
 
-	<script type="module">
-		// short alias, available in inline event handlers
-		window.fs = frame_stacker;
-	</script>
+    <style>
+        body {
+            background-color: white;
+        }
+        .EdgeSnapperBar {
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid #aaa;
+            background-color: white;
+        }
+        .EdgeSnapperBar > button {
+            margin: 5px;
+        }
 
-	<style>
-		body {
-			background-color: white;
-		}
-		.EdgeSnapperBar {
-			position: sticky;
-			top: 0;
-			display: flex;
-			justify-content: center;
-			border-bottom: 1px solid #aaa;
-			background-color: white;
-		}
-		.EdgeSnapperBar > button {
-			margin: 5px;
-		}
-
-	</style>
+    </style>
 </head>
 <body>
-	<aside>Testing 
-		<script>
-			if (src_mode) {
-				document.write('src code. <a href="/demo/dist/">Test dist code</a>.');
-			}
-			else {
-				document.write('dist code. <a href="/demo/src/">Test src code</a>.');
-			}
-		</script>
-		<a href="https://github.com/quadrant-newmedia/frame_stacker.js">View on GitHub</a>.
-	</aside>
+    <aside>Testing 
+        <script>
+            if (src_mode) {
+                document.write('src code. <a href="/demo/dist/">Test dist code</a>.');
+            }
+            else {
+                document.write('dist code. <a href="/demo/src/">Test src code</a>.');
+            }
+        </script>
+        <a href="https://github.com/quadrant-newmedia/frame_stacker.js">View on GitHub</a>.
+    </aside>
 
-	<h1>frame_stacker.js</h1>
+    <h1>frame_stacker.js</h1>
 
-	<p>This is a helper library for managing iframe-based modal dialogs/overlays (hereinafter known as "frames").</p>
+    <p>This is a helper library for managing iframe-based modal dialogs/overlays (hereinafter known as "frames"). Frames are managed in a stack-like manner. Only the top-most frame is interactive. We aim to:</p>
 
-	<p>Frames are nestable and customizable. All frames automatically take care of:</p>
-	<ul>
-		<li>focus management</li>
-		<li>blocking clicks outside of the top-most frame</li>
-		<li>layering and z-index issues</li>
-	</ul>
+    <ul>
+        <li>provide all required accessibility/usability features by default</li>
+        <li>provide a useful set of "plugins" which implement commonly desired features</li>
+        <li>allow for easy customizations/extension where needed</li>
+    </ul>
 
-	<h2>Documentation</h2>
-	<p>This document serves as both the test page and documentation for this project.</p> 
-	<p>Most button handlers are implemented in-line, so you can easily inspect exactly what code they are running. Note that we've created a short alias for frame_stacker on this page via:
-	<blockquote><code>window.fs = window.frame_stacker;</code></blockquote>
-	<p>Some features are documented more thoroughly in the source code than they are here. Where relevant, we link directly to the source from this document. Feel free to clone the whole project, if you find it easier to read a local copy of the code.</p>
+    <h2>Documentation</h2>
+    <p>This document serves as both the test page and documentation for this project.</p> 
+    <p>Most button handlers are implemented in-line, so you can easily inspect exactly what code they are running. Note that we've created a short alias for frame_stacker on this page via:
+    <blockquote><code>window.fs = window.frame_stacker;</code></blockquote>
+    <p>Some features are documented more thoroughly in the source code than they are here. Where relevant, we link directly to the source from this document. Feel free to clone the whole project, if you find it easier to read a local copy of the code.</p>
 
-	<h2>Installation</h2>
-	<p>Go to the <a href="https://github.com/quadrant-newmedia/frame_stacker.js">repo on GiHub</a> and clone the entire project or download one of the directories in "releases".</p>
-	<p>Add the script and stylesheet to your "base page" and you're ready to go. You do not need to add the script or stylesheet to your iframe pages.</p>
+    <h2>Installation</h2>
+    <p>Go to the <a href="https://github.com/quadrant-newmedia/frame_stacker.js">repo on GiHub</a> and clone the entire project or download one of the directories in "releases".</p>
+    <p>Add the script and stylesheet to your "base page" and you're ready to go. You do not need to add the script or stylesheet to your iframe pages.</p>
 
-	<h2>Basic Usage</h2>
-	<p>Call <code>frame_stacker.push(url, plugin, other_plugin, ...)</code> to create a new frame.</p>
-	<p>Call <code>frame_stacker.resolve([value])</code> to close the frame (you can call this from either the parent window or inside the iframe).</p>
-	<button onclick="fs.push('./basic_close.html', fs.full_layer);">Open Frame</button>
+    <h2>Basic Usage</h2>
+    <p>Call <code>frame_stacker.push(url, plugin, other_plugin, ...)</code> to create a new frame.</p>
+    <p>Call <code>frame_stacker.resolve()</code> to close the frame (the <a href="#communication">communication section</a> discusses why we use the term "resolve" rather than "pop"). 
+    <p>Note that the global <code>frame_stacker</code> object will be copied to the iframe's window. You do not need to include frame_stacker.js inside the iframe, but you can still call <code>frame_stacker.resolve()</code> from inside the iframe.</p>
+    <button data-display-onclick onclick="fs.push('./basic_close.html', fs.full_layer);">Open Frame</button>
 
+    <h2>Plugins</h2>
+    <p>Rather than taking a single configuration object, frame_stacker.push() accepts one or more configuration objects, which we refer to as "plugins". A plugin is any simple javascript object with 
+        TODO
+    </p>
 
+    <h2>Accessibility / Usability</h2>
+    <p>We aim to implement all of the accessibility features outlined on <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/dialog_role">Mozilla's article about the ARIA "dialog" role.</a></p>
+    <ul>
+        <li>When pushing an iframe, that iframe is focused within the parent page.</li>
+        <li>When an iframe page loads, the first element with the <code>autofocus</code> attribute will be given focus within the iframe.</li>
+        <li>Keyboard focus is trapped in the top-most frame.</li>
+        <li>Keyboard focus is restored after resolving a frame (whichever element had focus before the frame was pushed will be refocused when it is closed).</li>
+        <li>Click events outside the top-most frame are blocked.</li>
+        <li>The iframe automatically gets <code>role="dialog"</code> and <code>aria-lable</code> attributes. The <code>aria-label</code> attribute's value comes from the <code>&lt;title&gt;</code> of the iframe's document.</li>
+    </ul>
+    <p>TODO:</p>
+    <ul>
+        <li>screen reader testing</li>
+        <li>see if we can tell browser extensions like Vimium not to create "hints" for any element outside of the top-most frame.</li>
+    </ul>
 
+    <h2 id="communication">Inter-window communication</h2>
 
-
-
-	<p>Frames are nestable. </p>
-
-	<h2>Basic/Full Layer Tests</h2>
-	<p>
-		<button onclick="fs.push('./basic_full_layer.html', fs.full_layer)">
-			Open Full Layer Modal
-		</button>
-	</p>
-
-	<h2>Auto-Layer</h2>
-	Resize the textare inside the iframe and verify that:
-	<ul>
-		<li>Height is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
-		<li>Width is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
-		<li>Iframe shifts toward top of viewport when small - looks more balanced that way, closer to how alert() windows look</li>
-		<li>You can click outside the iframe, or press escape, to exit</li>
-	</ul>
-	<p>
-		<button onclick="fs.push('./user_sizable.html', fs.auto_layer, fs.easy_exit)">Open auto-layer</button>
-	</p>
-
-	<h2>Edge-snapping layer</h2>
-	<p>
-		<button onclick="fs.push(
-			'.', 
-			fs.edge_snapping_layer, 
-			fs.edge_snapping_buttons,
-			fs.shadow_border,
-			fs.easy_exit,
-		)">Open edge-snapping layer</button>
-	</p>
-
-	<h2>Draggable Test</h2>
-	Verify that:
-	<ul>
-		<li>You can drag the window (with mouse or touch screen)</li>
-		<li>The window is cannot be moved out of the viewport</li>
-		<li>You have to start the drag from the target</li>
-	</ul>
-	<p>
-		<button onclick="fs.push('./draggable.html', fs.auto_centering_layer, fs.shadow_border, fs.draggable, fs.easy_exit)">Open Draggable Window</button>
-	</p>
+    <h2>Nesting</h2>
 
 
-	<div style="width: 400px;">
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	</div>
+
+
+    <p>Frames are nestable. </p>
+
+    <h2>Basic/Full Layer Tests</h2>
+    <p>
+        <button onclick="fs.push('./basic_full_layer.html', fs.full_layer)">
+            Open Full Layer Modal
+        </button>
+    </p>
+
+    <h2>Auto-Layer</h2>
+    Resize the textare inside the iframe and verify that:
+    <ul>
+        <li>Height is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
+        <li>Width is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
+        <li>Iframe shifts toward top of viewport when small - looks more balanced that way, closer to how alert() windows look</li>
+        <li>You can click outside the iframe, or press escape, to exit</li>
+    </ul>
+    <p>
+        <button onclick="fs.push('./user_sizable.html', fs.auto_layer, fs.easy_exit)">Open auto-layer</button>
+    </p>
+
+    <h2>Edge-snapping layer</h2>
+    <p>
+        <button data-display-onclick onclick="
+            fs.push(
+                '.', 
+                fs.edge_snapping_layer, 
+                fs.edge_snapping_buttons,
+                fs.shadow_border,
+                fs.easy_exit,
+            )">Open edge-snapping layer</button>
+    </p>
+
+    <h2>Draggable Test</h2>
+    Verify that:
+    <ul>
+        <li>You can drag the window (with mouse or touch screen)</li>
+        <li>The window is cannot be moved out of the viewport</li>
+        <li>You have to start the drag from the target</li>
+    </ul>
+    <p>
+        <button onclick="fs.push('./draggable.html', fs.auto_centering_layer, fs.shadow_border, fs.draggable, fs.easy_exit)">Open Draggable Window</button>
+    </p>
+
+
+    <div style="width: 400px;">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
 </body>
 </html>

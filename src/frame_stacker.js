@@ -1,5 +1,6 @@
 import * as layer_manager from './layer_manager.js';
 
+import aria from './plugins/aria.js';
 import auto_sizing from './plugins/auto_sizing.js';
 import auto_centering_layer from './plugins/auto_centering_layer.js';
 import draggable from './plugins/draggable.js';
@@ -83,7 +84,7 @@ function validate(plugin) {
 window.frame_stacker = {
 	push: function(url, ...plugins) {
 		// prepend a fixed set of plugins, which are always used
-		plugins = [focus_management].concat(plugins);
+		plugins = [aria, focus_management].concat(plugins);
 
 		const plugin = combine_plugins(...plugins);
 		validate(plugin);
