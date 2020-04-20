@@ -1,24 +1,32 @@
 #!/bin/bash
-[ $# -ne 1 ] && { echo "Usage: $0 version_number"; exit 1; }
+[ $# -ne 1 ] && { echo "Usage: $0 version_arg"; exit 1; }
 
-release=$1
-release_dir="releases/$1"
-# message="/*! frame_stacker.js v$release | (c) Quadrant Newmedia Corporation | https://github.com/quadrant-newmedia/frame_stacker.js */"
+version_arg=$1
+
+# Ensure we have a clean build, with no license comment in the dist file
+./build
+
+# Tell npm to bump version in package.json, get new version
+version=$(npm --no-git-tag-version -f version $version_arg)
+
+# prepend license comment to dist code
 message="/*! 
-	frame_stacker.js v$release
+	frame_stacker.js $version
 	(c) Quadrant Newmedia Corporation
 	https://github.com/quadrant-newmedia/frame_stacker.js 
 */"
 
-mkdir $release_dir || exit 1;
-cp dist/* $release_dir || exit 1;
-cat <(echo "$message") dist/frame_stacker.js > $release_dir/frame_stacker.js || exit 1;
-cat <(echo "$message") dist/frame_stacker.css > $release_dir/frame_stacker.css || exit 1;
+echo -e "$message\n$(cat dist/frame_stacker.js)" > dist/frame_stacker.js
 
-git add dist src $release_dir || exit 1;
-# Note - will launch editor - user can abandon if desired
-git commit || exit 1;
+# cat <(echo "$message") dist/frame_stacker.js > dist/frame_stacker.js || exit 1;
 
-git tag v$release
-git push
-git push origin v$release
+# git add dist src package.json || exit 1;
+
+# # Note - will launch editor - user can abandon if desired
+# git commit || exit 1;
+
+# git tag $version
+# git push
+# git push origin $version
+
+# npm publish
