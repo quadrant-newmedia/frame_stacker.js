@@ -2,6 +2,9 @@ html {
     font: 14px sans-serif;
     line-height: 1.6;
 }
+body {
+	margin: 1rem;
+}
 button:focus {
     /*outline: 2px solid blue;*/
 }
@@ -10,10 +13,34 @@ code {
 	border: 1px solid #aaa;
 	padding: 0 5px;
 }
+h2 {
+	border-bottom: 1px solid #aaa;
+}
+
 .AttrDemoCode {
 	display: block;
 	border: none;
 	border-left: 1px solid #aaa;
 	background-color: transparent;
 	white-space: pre-wrap;
+}
+
+
+button {
+	font-size: inherit;
+	border: 1px solid #aaa;
+	background-color: white;
+	border-radius: 5px;
+	box-shadow: 2px 2px 0 0 #888;
+}
+button:active {
+	transform: scale(0.95);
+}
+[demo-button] {
+	font-family: monospace;
+	text-align: left;
+}
+[demo-button]:before {
+	display: inline;
+	content: attr(onclick);
 }

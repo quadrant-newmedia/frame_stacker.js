@@ -54,7 +54,23 @@
 
     <h1>frame_stacker.js</h1>
 
-    <p>This is a helper library for managing iframe-based modal dialogs/overlays (hereinafter known as "frames"). Frames are managed in a stack-like manner. Only the top-most frame is interactive. We aim to:</p>
+    <p>A helper library for managing iframe-based modal dialogs/overlays (hereinafter known as "frames"). Frames are managed in a stack-like manner. Only the top-most frame is interactive.</p>
+
+    <p>
+        This is the test/demo/documentation page. On this page, to make the examples more succinct, we've set:<br>
+        <code>window.fs = window.frame_stacker;</code>
+    </p>
+
+    <p>
+        Most of the buttons on this page use in-line click handlers, and display the value of that handler right in the button.
+    </p>
+
+    <p>
+        <button onclick="fs.push('./full_layer.html', fs.full_layer)" demo-button></button>
+        <br>
+        <button onclick="fs.push('./auto_layer.html', fs.full_layer)" demo-button></button>
+    </p>
+
 
     <ul>
         <li>provide all required accessibility/usability features by default</li>
