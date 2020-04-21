@@ -6,7 +6,7 @@ version_arg=$1
 # Ensure we have a clean build, with no license comment in the dist file
 ./build
 
-# Tell npm to bump version in package.json, get new version
+# Tell npm to bump version in package.json, commit change, get new version
 version=$(npm version $version_arg) || exit 1;
 
 # prepend license comment to dist code
@@ -18,9 +18,13 @@ message="/*!
     To update:
     curl -L -O https://unpkg.com/frame_stacker/dist/frame_stacker.js
     curl -L -O https://unpkg.com/frame_stacker/dist/frame_stacker.js.map
-*/"
+*/
+"
 
-echo -e "$message\n$(cat dist/frame_stacker.js)" > dist/frame_stacker.js
+tmp=`mktemp`
+echo "$message" | cat - dist/frame_stacker.js > $tmp
+mv $tmp dist/frame_stacker.js
+
 npm publish
 git push
 git push origin $version
