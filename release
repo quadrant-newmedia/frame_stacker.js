@@ -14,6 +14,9 @@ message="/*!
 	frame_stacker.js $version
 	(c) Quadrant Newmedia Corporation
 	https://github.com/quadrant-newmedia/frame_stacker.js 
+
+    To update:
+    curl -O https://unpkg.com/frame_stacker/dist/frame_stacker.js
 */"
 
 echo -e "$message\n$(cat dist/frame_stacker.js)" > dist/frame_stacker.js
