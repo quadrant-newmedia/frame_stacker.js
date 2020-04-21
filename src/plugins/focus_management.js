@@ -52,9 +52,12 @@ function focus_wrap(keydown_event) {
 export default {
     on_load: function(iframe) {
         // focus first element with [autofocus]
-        const doc = iframe.contentDocument;
-        const autofocus_target = doc.querySelector('[autofocus]');
-        autofocus_target && autofocus_target.focus();
+        // (but only if the iframe is still the top layer)
+        if (iframe == iframe.ownerDocument.activeElement) {
+            const doc = iframe.contentDocument;
+            const autofocus_target = doc.querySelector('[autofocus]');
+            autofocus_target && autofocus_target.focus();
+        }
 
         // Tab key - wrap focus within the iframe
         iframe.contentWindow.addEventListener('keydown', focus_wrap);
@@ -65,6 +68,7 @@ export default {
     // We don't do a "deep" restore, in case that other iframe is cross origin (in which case, we can't read it's activeElement)
     on_created: function(iframe) {
         iframe._frame_stacker_focus_management_previous_parent_active_element = document.activeElement;
+        iframe.focus();
     },
     on_resolve: function(value, iframe) {
         iframe._frame_stacker_focus_management_previous_parent_active_element.focus();

@@ -14,8 +14,12 @@ global_container.style = `
 // TODO - support browsers who don't support position: fixed (ie. Opera mini)
 // If style.position != 'fixed', changed to absolute, set width/height manually, add scroll listener to set top/left
 function get_iframe_container() {
-	// ensure global_container is in DOM, at end of body
-	document.body.appendChild(global_container);
+	// Note - we can't blindly call document.body.appendChild(global_container)
+	// if we do, any currently open iframe layers will reload
+	// (moving an iframe in the DOM always causes it to reload)
+	if (!global_container.parentElement) {
+		document.body.appendChild(global_container);		
+	}
 	const c = document.createElement('div');
 	c.style = `
 		position: absolute; 
@@ -165,7 +169,6 @@ export function push(url, {
 	});
 
 	iframe.src = url;
-	iframe.focus();
 
 	return promise;
 }
