@@ -16,12 +16,14 @@ message="/*!
 	https://github.com/quadrant-newmedia/frame_stacker.js 
 
     To update:
-    curl -O https://unpkg.com/frame_stacker/dist/frame_stacker.js
-    curl -O https://unpkg.com/frame_stacker/dist/frame_stacker.js.map
+    curl -L -O https://unpkg.com/frame_stacker/dist/frame_stacker.js
+    curl -L -O https://unpkg.com/frame_stacker/dist/frame_stacker.js.map
 */"
 
 echo -e "$message\n$(cat dist/frame_stacker.js)" > dist/frame_stacker.js
 npm publish
+git push
+git push origin $version
 
 # cat <(echo "$message") dist/frame_stacker.js > dist/frame_stacker.js || exit 1;
 
