@@ -1,13 +1,11 @@
 {
   "name": "frame_stacker",
-  "version": "0.0.0",
+  "version": "0.0.6",
   "type": "module",
   "main": "src/frame_stacker.js",
   "devDependencies": {
-    "cssnano": "^4.1.10"
-  },
-  "dependencies": {
-    "dedent": "^0.7.0",
+    "cssnano": "^4.1.10",
     "parcel-bundler": "^1.12.4"
-  }
+  },
+  "dependencies": {}
 }

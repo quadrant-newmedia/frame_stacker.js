@@ -28,7 +28,7 @@ function get_focusable_elements(body) {
 }
 function focus_wrap(keydown_event) {
     // Note - keydown_event may have occurred in any window, not necessarily the one executing this code
-    if (keydown_event.default_prevented) return
+    if (keydown_event.defaultPrevented) return
     if (keydown_event.key != 'Tab') return
     if (keydown_event.altKey || keydown_event.ctrlKey || keydown_event.metaKey) return
 
