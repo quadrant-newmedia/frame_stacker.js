@@ -1,4 +1,3 @@
 #!/bin/bash
 rm -r dist
 node_modules/.bin/parcel build --public-url ./ -d dist src/frame_stacker.js 
-# TODO - read version from package.json, create comment in dist

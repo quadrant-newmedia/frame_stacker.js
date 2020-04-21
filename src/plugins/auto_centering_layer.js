@@ -20,31 +20,24 @@ export default with_default_plugin(function({
 }={}) {
     return {
         create: function(container) {
-            // TODO - we no longer need this wrapper - we can set display:flex directly on container
-            const w = document.createElement('div');
-            container.appendChild(w);
-            w.style = `
-                position: absolute;
-                left: 0;right: 0;top: 0;bottom: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            `;
-            w.style.padding = wapper_padding;
-            w.appendChild(make_spacer(1));
+            const s = container.style;
+            s.display = 'flex';
+            s.flexDirection = 'column';
+            s.alignItems = 'center';
+            s.padding = wapper_padding;
+            container.appendChild(make_spacer(1));
             const iframe = document.createElement('iframe');
             iframe.style.maxWidth = '100%';
             iframe.style.opacity = 0;
-            w.appendChild(iframe);
-            w.appendChild(make_spacer(bottom_grow));
+            container.appendChild(iframe);
+            container.appendChild(make_spacer(bottom_grow));
             return iframe
         },
         on_load: function(iframe, first_load) {
             if (first_load) iframe.style.opacity = '1';
         },
         remove: function(iframe) {
-            const w = iframe.parentElement;
-            w.parentElement.removeChild(w);
+            iframe.parentElement.removeChild(iframe);
         },
     };
 });
