@@ -25,6 +25,7 @@ export default with_default_plugin(function({
             s.flexDirection = 'column';
             s.alignItems = 'center';
             s.padding = wapper_padding;
+            s.boxSizing = 'border-box';
             container.appendChild(make_spacer(1));
             const iframe = document.createElement('iframe');
             iframe.style.maxWidth = '100%';
