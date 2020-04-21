@@ -9,14 +9,12 @@
         if (src_mode) {
             // include src script, as js module
             document.write('<script type="module" src="/src/frame_stacker.js"><\/script>');
-            document.write('<link rel="stylesheet" type="text/css" href="/src/frame_stacker.css">');
         }
         else {
             // we use parcel.js to bundle our code
             // the bundles that parcel produces do NOT work in strict mode
             // therefore, we must load this a regular script, NOT module
             document.write('<script defer src="/dist/frame_stacker.js"><\/script>');
-            document.write('<link rel="stylesheet" type="text/css" href="/dist/frame_stacker.css">')
         }
     </script>
 
@@ -72,7 +70,7 @@
 
     <h2>Installation</h2>
     <p>Go to the <a href="https://github.com/quadrant-newmedia/frame_stacker.js">repo on GiHub</a> and clone the entire project or download one of the directories in "releases".</p>
-    <p>Add the script and stylesheet to your "base page" and you're ready to go. You do not need to add the script or stylesheet to your iframe pages.</p>
+    <p>Add the script to your "base page" and you're ready to go. You do not need to add the script or stylesheet to your iframe pages.</p>
 
     <h2>Basic Usage</h2>
     <p>Call <code>frame_stacker.push(url, plugin, other_plugin, ...)</code> to create a new frame.</p>
