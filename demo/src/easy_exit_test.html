@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html style="background-color: hsl(210, 100%, 75%);">
+<link rel="stylesheet" href="./style.css">
+<script defer src="/test_utils.js"></script>
+<title>Easy Exit Test</title>
+<p>Verify that:</p>
+<ul>
+    <li>Clicking outside this frame closes it, but does not activate any buttons you clicked</li>
+    <li>Pressing escape closes this frame</li>
+    <li>If you focus the textarea, or select input, you have to press escape twice (the first time just "exits" the form control)</li>
+</ul>
+
+<p>
+    Also, verify correct nesting behaviour:<br>
+    <button onclick="fs.push('./easy_exit_inner.html', tests.medium_layer, fs.easy_exit);" demo-button></button>
+</p>
+
+<p>
+    <textarea></textarea>
+</p>
+<p>
+    <select><option>Item 1</option><option>Item 2</option></select>
+</p>
+
+<button onclick="fs.resolve();" demo-button autofocus=""></button>

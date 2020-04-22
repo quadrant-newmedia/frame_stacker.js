@@ -1,44 +1,31 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="./style.css">
-</head>
-<body style="background-color: white;">
-    <p>Resize the textarea below to see how the iframe resizes</p>
-    <textarea></textarea>
-    <p><button onclick="location.reload();">Click Here</button> to reload this iframe and verify that it resizes again on load.</p>
+<html style="background-color: green;">
+<title>Auto Layer Test</title>
+<link rel="stylesheet" type="text/css" href="./style.css">
+<script defer src="/test_utils.js"></script>
 
-    <p><button onclick="
-        var fs = frame_stacker;
-        fs.push('./basic_full_layer.html', fs.full_layer);
-    ">Open full layer</button></p>
-
-    <p>Use arrow keys to resize iframe.</p>
-    <script type="text/javascript">
-        addEventListener('keydown', function(e) {
-            var delta_x = 0;
-            var delta_y = 0;
-            switch (e.key) {
-                case 'ArrowLeft':
-                    delta_x = -1;
-                    break;
-                case 'ArrowRight':
-                    delta_x = 1;
-                    break;
-                case 'ArrowUp':
-                    delta_y = -1;
-                    break;
-                case 'ArrowDown':
-                    delta_y = 1;
-                    break;
-            }
-            if (delta_x || delta_y) {
-                e.preventDefault();
-                iframe.style.width = parseInt(iframe.style.width)+20*delta_x+'px';
-                iframe.style.height = parseInt(iframe.style.height)+20*delta_y+'px';
-            }
-        });
-    </script>
-</body>
-</html>
+<body style="
+    background-color: white; 
+    padding: 10px;
+    margin: 10px;
+">
+<p>
+    Resize the textarea below to see how the iframe resizes. <br>
+    Verify that:
+</p>
+<ul>
+    <li>There is a 10px red border (iframe padding)</li>
+    <li>There is a 10px green border (html background color, body margin)</li>
+    <li>The iframe's initial width and height are determined by the content of this page.</li>
+    <li>Height is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
+    <li>Width is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
+    <li>Iframe shifts toward top of viewport when small - <br>
+    looks more balanced that way, closer to how alert() windows look</li>
+</ul>
+<textarea></textarea>
+<p>
+    <button onclick="location.reload();">Click Here</button> to reload this iframe and verify that it resizes again on load
+</p>
+<p>
+    <button onclick="fs.resolve();" demo-button></button>
+</p>

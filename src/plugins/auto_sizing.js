@@ -2,6 +2,13 @@ import with_default_plugin from './with_default_plugin.js';
 
 function get_interior_border_width(computed_style) {
 	if (computed_style.boxSizing != 'border-box') return 0
+	return get_border_width(computed_style);
+}
+function get_exterior_border_width(computed_style) {
+	if (computed_style.boxSizing == 'border-box') return 0
+	return get_border_width(computed_style);
+}
+function get_border_width(computed_style) {
 	return Math.ceil(
 		parseFloat(computed_style.borderLeftWidth) +
 		parseFloat(computed_style.paddingLeft) +
@@ -9,15 +16,24 @@ function get_interior_border_width(computed_style) {
 		parseFloat(computed_style.borderRightWidth)
 	);
 }
+
 function get_interior_border_height(computed_style) {
-	if (computed_style.boxSizing != 'border-box') return 0
+	if (computed_style.boxSizing != 'border-box') return 0 
+	return get_border_height(computed_style);
+}
+function get_exterior_border_height(computed_style) {
+	if (computed_style.boxSizing == 'border-box') return 0
+	return get_border_height(computed_style);
+}
+function get_border_height(computed_style) {
 	return Math.ceil(
-		parseFloat(computed_style.borderTopHeight) +
+		parseFloat(computed_style.borderTopWidth) +
 		parseFloat(computed_style.paddingTop) +
 		parseFloat(computed_style.paddingBottom) +
-		parseFloat(computed_style.borderBottomHeight)
+		parseFloat(computed_style.borderBottomWidth)
 	);
 }
+
 function fix_size(iframe, width, height, document, body_style, iframe_style, adjust_overflowy) {
 	let is_limited = false;
 	if (height) {
@@ -45,7 +61,7 @@ function fix_size(iframe, width, height, document, body_style, iframe_style, adj
 				parseFloat(body_style.marginLeft) +
 				parseFloat(body_style.marginRight) +
 				parseFloat(body_style.width)
-			) + get_interior_border_width(iframe_style)
+			) + get_interior_border_width(iframe_style) + get_exterior_border_width(body_style)
 		) + 'px';
 	}
 }

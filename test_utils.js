@@ -81,4 +81,10 @@ window.tests =  {
       iframe.style.height = '40%';
     }
   }),
+  iframe_with_padding: {
+    on_created: function(iframe) {
+      iframe.style.backgroundColor = 'red';
+      iframe.style.padding = '10px';
+    }
+  }
 }

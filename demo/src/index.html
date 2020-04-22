@@ -99,12 +99,26 @@
     <input type="text" placeholder="DUMMY ELEMENT" id="parent_focus_test_element">
     <button id="focus_test_button" onclick="fs.push('./focus_test.html', tests.big_layer)" demo-button></button>
 
+    <h2>External Clicks/easy_exit</h2>
+    <p><code>frame_stacker</code> adds a backdrop element behind the top-most iframe, which stops you from activating buttons, etc.</p>
+
+    <p>By default, clicking outside the top-most frame does nothing. If you set <code>exit_on_external_click</code> on one of the plugins you pass to <code>frame_stacker.push()</code>, then clicking outside of it will cause it close. We recommend using the <code>frame_stacker.easy_exit</code> plugin, which sets <code>exit_on_external_click</code> to true, and also closes the frame if the user hits the escape key.</p>
+
+    <p>
+        <button onclick="fs.push('./external_click_test.html', tests.big_layer);" demo-button></button><br>
+        <button onclick="fs.push('./easy_exit_test.html', tests.big_layer, fs.easy_exit);" demo-button></button>
+    </p>
 
     <h2>full_layer</h2>
     <button onclick="fs.push('./full_layer.html', fs.full_layer)" demo-button></button>
 
     <h2>auto_layer</h2>
-
+    <p>
+        <code>auto_layer</code> combines a few different plugins, which can also use individually. It keeps the iframe centered in the viewport (though it isn't dead-center vertically - we think it looks better when it's closer to the top), and automatically sizes the iframe based on its content. The auto sizing feature should work for any combination of margin, padding, and box-sizing on the iframe element or on the body element of its document. We do not currently support margin or padding on the html element (documentElement) of the iframe (I've never seen anyone do that).
+    </p>
+    <p>
+        <button onclick="fs.push('./user_sizable.html', fs.auto_layer, tests.iframe_with_padding)" demo-button></button>
+    </p>
 
     <h2>TODO</h2>
 
@@ -145,17 +159,6 @@
         </button>
     </p>
 
-    <h2>Auto-Layer</h2>
-    Resize the textare inside the iframe and verify that:
-    <ul>
-        <li>Height is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
-        <li>Width is bounded (and respects the "wrapper_padding" value passed to auto_centering_layer)</li>
-        <li>Iframe shifts toward top of viewport when small - looks more balanced that way, closer to how alert() windows look</li>
-        <li>You can click outside the iframe, or press escape, to exit</li>
-    </ul>
-    <p>
-        <button onclick="fs.push('./user_sizable.html', fs.auto_layer, fs.easy_exit)">Open auto-layer</button>
-    </p>
 
     <h2>Edge-snapping layer</h2>
     <p>
