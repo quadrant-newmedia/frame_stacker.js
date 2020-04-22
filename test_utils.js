@@ -53,7 +53,7 @@ function dedent(strings) {
 }
 
 // short alias, make available in inline event handlers
-window.fs = frame_stacker;
+window.fs = window.parent.frame_stacker;
 
 [].slice.call(document.querySelectorAll('[data-display-onclick]')).forEach(function(e) {
 	var c = document.createElement('code');
@@ -61,3 +61,24 @@ window.fs = frame_stacker;
 	c.innerText = dedent(e.getAttribute('onclick'));
 	e.parentElement.insertBefore(c, e);
 });
+
+window.tests =  {
+  big_layer: fs.combine_plugins(fs.auto_centering_layer, fs.shadow_border, {
+    on_created: function(iframe) {
+      iframe.style.width = '80%';
+      iframe.style.height = '80%';
+    }
+  }),
+  medium_layer: fs.combine_plugins(fs.auto_centering_layer, fs.shadow_border, {
+    on_created: function(iframe) {
+      iframe.style.width = '60%';
+      iframe.style.height = '60%';
+    }
+  }),
+  small_layer: fs.combine_plugins(fs.auto_centering_layer, fs.shadow_border, {
+    on_created: function(iframe) {
+      iframe.style.width = '40%';
+      iframe.style.height = '40%';
+    }
+  }),
+}

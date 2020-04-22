@@ -5,7 +5,12 @@
 <title>focus tests</title>
 <p>Notice that:</p>
 <ul>
-
+    <li>
+        Focus cannot be moved to parent window, even programmatically. <br>
+        Clicking the following button will NOT move focus to the parent window: <br>
+        <button onclick="window.parent.document.querySelector('#parent_focus_test_element').focus();" demo-button></button>
+    </li>
+    <li>Vimium (browser extension) does not generate hints for elements in parent window</li>
     <li>The "Close" button below auto-focuses</li>
     <li>If you <button onclick="location.reload()">click this button</button>, the iframe will reload and the "Close" button will be re-focused</li>
     <li>If you press tab (or shift+tab), focus will wrap between the inputs in this iframe</li>

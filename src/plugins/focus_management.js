@@ -1,11 +1,11 @@
 /*
-    TODO - "focus steal" - while topmost, if the iframe blurs, restore focus
-    This is to handle the case where focus left the iframe through some unforeseen circumstance (ie. Vimium)
-    Maybe we shouldn't worry about that, though?
+This plugin implements 4 different features:
+- parent window's focus is restored after last frame is resolved
+- a frame's focus is restored after a child frame is resolved
+- if focus somehow shifts to any window other than top-most, it is moved back to the top frame
+- pressing tab while a frame is open will wrap between the focusable elements in that frame
 
-    Should implement by:
-    - tracking valid activeElement in top-most frame
-    - when a covered frame receives focus, focus valid element
+It might have been clearer to implement all of these in separate plugins. We still might do that. We might run into issues with order of operations, however.
 */
 
 function compare_tab_order(a, b) {
@@ -56,20 +56,23 @@ function focus_wrap(keydown_event) {
 
 let valid_active_element = null;
 let top_frame = null;
-// TODO - we also need to catch focus going directly to parent window!
+// handle focusin inside iframes -> if iframe is not on top, send focus back to top
 function handle_focusin(iframe, event) {
     if (!top_frame) return
     if (iframe === top_frame) {
         valid_active_element = iframe.contentDocument.activeElement;
+        return
     }
-    else {
-        event.preventDefault();
-        event.stopPropagation();
-        valid_active_element.focus();
-    }
+    event.preventDefault();
+    event.stopPropagation();
+    valid_active_element.focus();
 }
 // If parent window receives focus while frame is open, send focus back to top frame
-addEventListener('focusin', handle_focusin.bind(null, null), true);
+addEventListener('focusin', function(event) {
+    if (top_frame && valid_active_element) {
+        valid_active_element.focus();
+    }
+}, true);
 
 export default {
     on_load: function(iframe) {
@@ -82,21 +85,15 @@ export default {
         if (iframe == top_frame) {
             const doc = iframe.contentDocument;
             // Note - if no autofocus, be sure to focus body
-            // This is important so that handle_focusin runs
+            // This is important so that handle_focusin runs, and sets valid_active_element
             const autofocus_target = doc.querySelector('[autofocus]') || doc.body;
             autofocus_target.focus();
-
-
         }
 
         // Tab key - wrap focus within the iframe
         iframe.contentWindow.addEventListener('keydown', focus_wrap);
-
     },
 
-    // This pair of function is responsible for restoring focus in the root_window
-    // Note that the stored element may be a different iframe, which will have it's own activeElement
-    // We don't do a "deep" restore, in case that other iframe is cross origin (in which case, we can't read it's activeElement)
     on_created: function(iframe) {
         iframe._frame_stacker_focus_management_previous_parent_active_element = document.activeElement;
         top_frame = iframe;
@@ -113,8 +110,6 @@ export default {
         iframe._frame_stacker_focus_management_previous_parent_active_element.focus();
     },
 
-    // This pair of functions is responsible for restoring focus within ourselves after we push another window layer
-    // It does not work with cross origin iframes
     on_covered: function(iframe) {
         iframe._frame_stacker_focus_management_previous_active_element = iframe.contentDocument.activeElement;
     },

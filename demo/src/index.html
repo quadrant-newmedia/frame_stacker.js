@@ -94,12 +94,15 @@
         <li>screen reader testing</li>
         <li>see if we can tell browser extensions like Vimium not to create "hints" for any element outside of the top-most frame.</li>
     </ul>
+    <!-- iframe will try to focus this element -->
+    <input type="text" placeholder="DUMMY ELEMENT" id="parent_focus_test_element">
+    <button id="focus_test_button" onclick="fs.push('./focus_test.html', tests.big_layer)" demo-button></button>
     <button onclick="fs.push('./focus_test.html', fs.full_layer)" demo-button></button>
 
 
     <h2>full_layer</h2>
     <button onclick="fs.push('./full_layer.html', fs.full_layer)" demo-button></button>
-    <h2>auto_</h2>
+    <h2>auto_layer</h2>
 
 
     <h2>TODO</h2>
@@ -108,7 +111,6 @@
     <p>
         <button onclick="fs.push('./basic_close.html', fs.full_layer)" demo-button></button>
         <br>
-        <button onclick="fs.push('./basic_close.html', fs.auto_layer)" demo-button></button>
     </p>
 
     <h2>Plugins</h2>
