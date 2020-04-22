@@ -6,6 +6,7 @@
 	We try to implement as few "features" here as possible, leaving those to plugins. Certain features (locks_scroll, exit_on_external_click) require knowlegde of global state, however, so we have to manage them here.
 */
 
+let parent_active_element = null;
 const global_container = document.createElement('div');
 global_container.style = `
 	position: fixed;
@@ -41,7 +42,7 @@ function cleanup_after_iframe_removal(iframe_container) {
 
 	// put the click blocker back underneath the top-most frame
 	global_container.removeChild(click_blocker);
-	global_container.insertAfter(click_block, global_container.lastElementChild);
+	global_container.insertBefore(click_blocker, global_container.lastElementChild);
 
 	/*
 		When the last iframe has been removed from the global_container,
@@ -49,6 +50,7 @@ function cleanup_after_iframe_removal(iframe_container) {
 		This is important, because the global_container intercepts click events.
 	*/
 	if (global_container.querySelector('iframe')) return
+	parent_active_element && parent_active_element.focus();
 	global_container.parentElement.removeChild(global_container);
 }
 
@@ -125,6 +127,13 @@ export function push(url, {
 	const current_top = active_iframes[active_iframes.length-1];
 	if (current_top) {
 		current_top._frame_stacker.on_covered(current_top);
+	}
+
+	// Note - intentionally include resolved iframes here
+	// perhaps a new frame was pushed in the on_resolve handler for another frame, and that frame is still animating out
+	// in that case, do NOT update parent_active_element
+	if (get_iframes().length == 0) {
+		parent_active_element = document.activeElement;
 	}
 
 	if (lock_scroll) {

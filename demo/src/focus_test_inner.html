@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html style="background-color: white;">
+<link rel="stylesheet" href="./style.css">
+<script defer src="/test_utils.js"></script>
+<title>focus test inner</title>
+<p>Verify that:</p>
+<ul>
+    <li>
+        Focus cannot be moved to our opening frame, even programmatically. <br>
+        Clicking the following button will NOT move focus out of this iframe: <br>
+        <button onclick="parentButton.focus();" demo-button></button>
+    </li>
+    <li>
+        Vimium (browser extension) does not generate hints for elements in parent window or opening frame <br>
+        (TODO - not currently working - I still can't figure out how vimium decides whether or not to show hints for a particular element, and haven't managed to hide these)
+    </li>
+</ul>
+<button onclick="fs.resolve();" autofocus>Close</button>
