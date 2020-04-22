@@ -13,6 +13,8 @@ global_container.style = `
 `;
 // TODO - support browsers who don't support position: fixed (ie. Opera mini)
 // If style.position != 'fixed', changed to absolute, set width/height manually, add scroll listener to set top/left
+const click_blocker = document.createElement('div');
+click_blocker.style = `position: absolute; top: 0; left: 0; height: 100%; width: 100%;`;
 function get_iframe_container() {
 	// Note - we can't blindly call document.body.appendChild(global_container)
 	// if we do, any currently open iframe layers will reload
@@ -20,6 +22,10 @@ function get_iframe_container() {
 	if (!global_container.parentElement) {
 		document.body.appendChild(global_container);		
 	}
+
+	// move the click_blocker to the end of global_container
+	global_container.appendChild(click_blocker);
+
 	const c = document.createElement('div');
 	c.style = `
 		position: absolute; 
@@ -30,7 +36,13 @@ function get_iframe_container() {
 	return c;
 }
 function cleanup_after_iframe_removal(iframe_container) {
+	// remove the container element from global_container, assuming plugin didn't already do that (it shouldn't have)
 	iframe_container.parentElement && iframe_container.parentElement.removeChild(iframe_container);
+
+	// put the click blocker back underneath the top-most frame
+	global_container.removeChild(click_blocker);
+	global_container.insertAfter(click_block, global_container.lastElementChild);
+
 	/*
 		When the last iframe has been removed from the global_container,
 		remove the global_container from the DOM.
@@ -64,30 +76,31 @@ function fix_scroll() {
 	document.documentElement.scrollLeft = scrollLeft;
 }
 
-function on_iframe_click(clicked_iframe, event) {
-	// if there are any layers above this iframe, cancel the event
-	// pop the top-most contiguous iframes above the iframe which set exit_on_external_click
-
-	const iframes = get_iframes();
+function was_clicked(iframe, event) {
+	const rect = iframe.getBoundingClientRect();
+	const x = event.clientX;
+	const y = event.clientY;
+	return (
+		rect.left <= x && rect.right >= x && 
+		rect.top <= y && rect.bottom >= y 
+	);
+}
+click_blocker.addEventListener('click', function(event) {
+	/*
+		The user clicked outside the top-most iframe.
+		Figure out which layer the user intended to click on, 
+		and pop any frames above that having "exit_on_external_click"
+	*/
+	const iframes = get_unresolved_iframes();
 	// Intentionally iterate over iframes in reverse
 	// Stop as soon as we find the iframe that was clicked 
 	// (do NOT execute loop body for that iframe)
 	for (
 		let i = iframes.length - 1; 
-		i >= 0 && iframes[i] != clicked_iframe; 
+		i >= 0 && !was_clicked(iframes[i], event); 
 		i--
 	) {
-		const iframe = iframes[i];
-
-		// At this point, we know there was at least one iframe above the iframe that was clicked. Swallow the click event.
-		// Notice - if there are mutliple layers open, we might end up calling these multiple times - but that's okay
-		event.preventDefault();
-		event.stopPropagation();
-
-		// This iframe has already been resolved, and in the process of being removed from the DOM
-		if (iframe._frame_stacker.resolved) continue
-
-		if (iframe._frame_stacker.exit_on_external_click) {
+		if (iframes[i]._frame_stacker.exit_on_external_click) {
 			resolve();
 		}
 		else {
@@ -95,8 +108,7 @@ function on_iframe_click(clicked_iframe, event) {
 			break;
 		}
 	}
-}
-document.addEventListener('click', on_iframe_click.bind(null, null), true);
+});
 
 export function push(url, {
 	create,
@@ -117,6 +129,8 @@ export function push(url, {
 
 	if (lock_scroll) {
 		scroll_locking_layers_count += 1
+		
+		// Reminder - executing these mutltiple times, for multiple layers, is fine:
 		scrollTop = document.documentElement.scrollTop;
 		scrollLeft = document.documentElement.scrollLeft;
 		addEventListener('scroll', fix_scroll);
@@ -166,9 +180,6 @@ export function push(url, {
 		w.frame_stacker = w.frame_stacker || window.frame_stacker;
 		w.frame_stacker.push = window.frame_stacker.push;
 		w.frame_stacker.resolve = window.frame_stacker.resolve;
-
-		// These are required for implementing "exit_on_external_click"
-		iframe.contentDocument.addEventListener('click', on_iframe_click.bind(null, iframe), true);
 
 		on_load(iframe, first_load);
 		first_load = false;
