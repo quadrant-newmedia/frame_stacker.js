@@ -3,7 +3,7 @@
 
 	This module is responsible for managing the push/pop of iframe layers, and calling layer callbacks at appropriate times.
 
-	We try to implement as few "features" here as possible, leaving those to plugins. Certain features (locks_scroll, exit_on_external_click) require knowlegde about all layers, however, so we have to manage them here.
+	We try to implement as few "features" here as possible, leaving those to plugins. Certain features (locks_scroll, exit_on_external_click) require knowlegde of global state, however, so we have to manage them here.
 */
 
 const global_container = document.createElement('div');
@@ -150,6 +150,12 @@ export function push(url, {
 	let first_load = true;
 	iframe.addEventListener('load', function() {
 		const w = iframe.contentWindow;
+
+		/*
+			TODO - ditch this!
+			Child windows should just always act on window.parent.frame_stacker!
+			Even works for "flexible" windows, which are sometimes root, sometimes child.
+		*/
 		/*
 			Make frame_stacker available inside the iframe, even if it didn't include the script
 

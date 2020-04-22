@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html style="background-color: hsl(210, 100%, 75%);">
+<link rel="stylesheet" href="./style.css">
+<script defer src="/test_utils.js"></script>
+<title>focus tests</title>
+<p>Notice that:</p>
+<ul>
+
+    <li>The "Close" button below auto-focuses</li>
+    <li>If you <button onclick="location.reload()">click this button</button>, the iframe will reload and the "Close" button will be re-focused</li>
+    <li>If you press tab (or shift+tab), focus will wrap between the inputs in this iframe</li>
+    <li>You can click the "Push nested child" button to push another layer. After it's resolved, the "Push nested child" button will be re-focused.</li>
+    <li>After closing this window, the button you clicked to open it will be re-focused</li>
+</ul>
+
+<button onclick="frame_stacker.resolve();" autofocus>Close</button>
+<button onclick="frame_stacker.push(location.pathname, frame_stacker.auto_layer);">Push nested child</button>

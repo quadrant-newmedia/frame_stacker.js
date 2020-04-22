@@ -17,7 +17,6 @@ message="/*!
 
     To update:
     curl -L -O https://unpkg.com/frame_stacker/dist/frame_stacker.js
-    curl -L -O https://unpkg.com/frame_stacker/dist/frame_stacker.js.map
 */
 "
 
