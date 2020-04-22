@@ -19,4 +19,10 @@
 </ul>
 
 <button onclick="frame_stacker.resolve();" autofocus>Close</button>
-<button onclick="frame_stacker.push(location.pathname, frame_stacker.auto_layer);">Push nested child</button>
+<button onclick="
+    var button = this;
+    frame_stacker.push('./focus_test_inner.html', tests.medium_layer, {
+        on_load: (function(iframe) {
+            iframe.contentWindow.parentButton = button;
+    })});
+">Push nested child</button>
