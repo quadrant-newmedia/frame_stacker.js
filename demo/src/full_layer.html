@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html style="background-color: hsl(210, 100%, 75%);">
 <link rel="stylesheet" href="./style.css">
+<script defer src="/test_utils.js"></script>
 <title>full_layer test</title>
-<p>Notice that:</p>
+<p>Verify that:</p>
 <ul>
     <li>This iframe covers the entire viewport</li>
     <li>The document in the parent window cannot be scrolled while this iframe is open</li>
 </ul>
 
-<button onclick="frame_stacker.resolve();" demo-button></button>
+<button onclick="fs.resolve();" demo-button></button>

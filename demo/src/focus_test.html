@@ -18,10 +18,10 @@
     <li>After closing this window, the button you clicked to open it will be re-focused</li>
 </ul>
 
-<button onclick="frame_stacker.resolve();" autofocus>Close</button>
+<button onclick="fs.resolve();" autofocus>Close</button>
 <button onclick="
     var button = this;
-    frame_stacker.push('./focus_test_inner.html', tests.medium_layer, {
+    fs.push('./focus_test_inner.html', tests.medium_layer, {
         on_load: (function(iframe) {
             iframe.contentWindow.parentButton = button;
     })});

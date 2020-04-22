@@ -65,7 +65,7 @@
     <p>Add the script to your page and you're good to go.</p>
 
     <h2>Documentation</h2>
-    <p>The <a href="https://github.com/quadrant-newmedia/frame_stacker.js">source code</a> serves as the official documentation. We recommend cloning and reading your local copy: <br>
+    <p>The demo on this page is a good starting point, but the <a href="https://github.com/quadrant-newmedia/frame_stacker.js">source code</a> serves as the official documentation. We recommend cloning and reading your local copy: <br>
     <code>git clone --depth 1 https://github.com/quadrant-newmedia/frame_stacker.js.git</code></p>
     <!-- TODO - make repo public, test -->
 
@@ -75,8 +75,9 @@
     </p>
 
     <p>
-        <br>On this page, to make the examples more succinct, we've set
-        <code>window.fs = window.frame_stacker;</code>
+        On this page, and in every iframe we push, we've set:<br>
+        <code>window.fs = window.parent.frame_stacker;</code><br>
+        On this page, window===window.parent, so this just creates a shorter alias for <code>frame_stacker</code>. In the iframes we push, window.parent refers to this window, so <code>fs</code> becomes a reference to this window's <code>frame_stacker</code>. That way, when code inside an iframe executes <code>fs.push(...)</code>, it will actually push a frame onto this window. This our recommended mode of operation.
     </p>
 
     <h2>Accessibility / Usability</h2>
@@ -97,11 +98,11 @@
     <!-- iframe will try to focus this element -->
     <input type="text" placeholder="DUMMY ELEMENT" id="parent_focus_test_element">
     <button id="focus_test_button" onclick="fs.push('./focus_test.html', tests.big_layer)" demo-button></button>
-    <button onclick="fs.push('./focus_test.html', fs.full_layer)" demo-button></button>
 
 
     <h2>full_layer</h2>
     <button onclick="fs.push('./full_layer.html', fs.full_layer)" demo-button></button>
+
     <h2>auto_layer</h2>
 
 
@@ -126,13 +127,6 @@
 
 <hr>
     <h2>Basic Usage</h2>
-    <p>Call <code>frame_stacker.push(url, plugin, other_plugin, ...)</code> to create a new frame.</p>
-    <p>Call <code>frame_stacker.resolve()</code> to close the frame (the <a href="#communication">communication section</a> discusses why we use the term "resolve" rather than "pop"). 
-    <p>Note that the global <code>frame_stacker</code> object will be copied to the iframe's window. You do not need to include frame_stacker.js inside the iframe, but you can still call <code>frame_stacker.resolve()</code> from inside the iframe.</p>
-    <button data-display-onclick onclick="fs.push('./basic_close.html', fs.full_layer);">Open Frame</button>
-
-        TODO
-    </p>
 
 
     <h2 id="communication">Inter-window communication</h2>

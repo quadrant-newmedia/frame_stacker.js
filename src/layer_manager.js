@@ -172,24 +172,6 @@ export function push(url, {
 
 	let first_load = true;
 	iframe.addEventListener('load', function() {
-		const w = iframe.contentWindow;
-
-		/*
-			TODO - ditch this!
-			Child windows should just always act on window.parent.frame_stacker!
-			Even works for "flexible" windows, which are sometimes root, sometimes child.
-		*/
-		/*
-			Make frame_stacker available inside the iframe, even if it didn't include the script
-
-			Patch the object so that push() and resolve() act on the "root window".
-
-			Intentionally do NOT overwrite the entire object. If the child page includes a different version of frame_stacker with different plugins available, it should still be able to use those.
-		*/
-		w.frame_stacker = w.frame_stacker || window.frame_stacker;
-		w.frame_stacker.push = window.frame_stacker.push;
-		w.frame_stacker.resolve = window.frame_stacker.resolve;
-
 		on_load(iframe, first_load);
 		first_load = false;
 	});
