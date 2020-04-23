@@ -67,6 +67,7 @@ function fix_size(iframe, width, height, document, body_style, iframe_style, adj
 }
 
 export default with_default_plugin(function({
+	// TODO - allow user to pass in explicit size here? Or should that be a separate plugin?
 	width=true,
 	height=true,
 	watch=true,

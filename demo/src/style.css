@@ -44,3 +44,7 @@ button:active {
 	display: inline;
 	content: attr(onclick);
 }
+[href-link]:before {
+	display: inline;
+	content: attr(href);	
+}

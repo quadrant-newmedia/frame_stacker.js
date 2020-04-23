@@ -1,14 +1,20 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Draggable Test</title>
-</head>
-<body style="background-color: white;">
-    You can't drag from here. You should be able to select this text.
+<html style="background-color: white;">
+<link rel="stylesheet" href="./style.css">
+<script defer src="/test_utils.js"></script>
+<title>Draggable Test</title>
+<body>
+    <p>Verify that:</p>
+    <ul>
+        <li>You can drag the window (with mouse or touch screen)</li>
+        <li>The window cannot be moved out of the viewport</li>
+        <li>You have to start the drag from the target</li>
+    </ul>
 
     <p frame-stacker-drag-target style="border: 1px solid blue; padding: 1rem;">
         Drag target
     </p>
 
+    <button demo-button onclick="fs.resolve();"></button>
 </body>
 </html>

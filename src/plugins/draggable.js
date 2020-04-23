@@ -1,7 +1,7 @@
 /*
 Make an iframe draggable within the parent window.
 
-We listen (on the window) to any mousedown/touchstart interactions on elements with the window-layer-drag-handle attribute. You can set this on the body element if you want to be able to drag the iframe from any part of it.
+We listen (on the window) to any mousedown/touchstart interactions on elements with the frame-stacker-drag-target attribute. You can set this on the body element if you want to be able to drag the iframe from any part of it.
 
 Iframe is bounded to stay within the viewport of parent window.
 

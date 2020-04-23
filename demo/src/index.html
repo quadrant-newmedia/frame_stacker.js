@@ -20,24 +20,6 @@
 
     <link rel="stylesheet" type="text/css" href="./style.css">
     <script defer src="/test_utils.js"></script>
-
-    <style>
-        body {
-            background-color: white;
-        }
-        .EdgeSnapperBar {
-            position: sticky;
-            top: 0;
-            display: flex;
-            justify-content: center;
-            border-bottom: 1px solid #aaa;
-            background-color: white;
-        }
-        .EdgeSnapperBar > button {
-            margin: 5px;
-        }
-
-    </style>
 </head>
 <body>
     <aside>Testing 
@@ -120,32 +102,20 @@
         <button onclick="fs.push('./user_sizable.html', fs.auto_layer, tests.iframe_with_padding)" demo-button></button>
     </p>
 
+    <h2>edge_snapping_layer</h2>
+    <p>
+        <button demo-button onclick="fs.push('./edge_snapping_test.html', fs.edge_snapping_layer, fs.edge_snapping_buttons, fs.shadow_border)"></button>
+    </p>
+
+    <h2>draggable</h2>
+    Makes an iframe draggable. See <a href="/src/plugins/draggable.js" href-link><a> for details.
+    <p>
+        <button onclick="fs.push('./draggable.html', fs.auto_layer, fs.draggable)" demo-button></button>
+    </p>
+
     <h2>TODO</h2>
 
     <h2 id="communication">Inter-window communication</h2>
-
-    <h2>Edge-snapping layer</h2>
-    <p>
-        <button data-display-onclick onclick="
-            fs.push(
-                '.', 
-                fs.edge_snapping_layer, 
-                fs.edge_snapping_buttons,
-                fs.shadow_border,
-                fs.easy_exit,
-            )">Open edge-snapping layer</button>
-    </p>
-
-    <h2>Draggable Test</h2>
-    Verify that:
-    <ul>
-        <li>You can drag the window (with mouse or touch screen)</li>
-        <li>The window is cannot be moved out of the viewport</li>
-        <li>You have to start the drag from the target</li>
-    </ul>
-    <p>
-        <button onclick="fs.push('./draggable.html', fs.auto_centering_layer, fs.shadow_border, fs.draggable, fs.easy_exit)">Open Draggable Window</button>
-    </p>
 
     <h2>Animations</h2>
     

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html style="background-color: white;">
+<link rel="stylesheet" href="./style.css">
+<script defer src="/test_utils.js"></script>
+<title>edge snapping tests</title>
+
+<!-- Note - edge_snapping_buttons prepends a basic, unstyled set of buttons - up to us to style them -->
+<!-- 
+    TODO - should we just drop it altogether? 
+    The main idea is to try to reduce the coupling of the iframe content with the whole edge snapping concept.
+    The page loaded in the iframe should not care whether it's loaded in an edge snapping layer or not.
+    Maybe that's just wishful thinking, though.
+-->
+<style>
+    body {
+        margin: 0;
+    }
+    .EdgeSnapperBar {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        border-bottom: 1px solid #aaa;
+        background-color: white;
+    }
+    .EdgeSnapperBar > button {
+        margin: 5px;
+    }
+</style>
+
+<main style="margin: 10px;">
+    <p>Verify that:</p>
+    <ul>
+        <li>The edge snapping buttons work</li>
+    </ul>
+    <button onclick="fs.resolve();" demo-button></button>
+</main>
