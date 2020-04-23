@@ -81,14 +81,21 @@
     <p>TODO: screen reader testing</p>
     <button id="focus_test_button" onclick="fs.push('./focus_test.html', tests.big_layer)" demo-button></button>
 
-    <h2>External Clicks/easy_exit</h2>
-    <p><code>frame_stacker</code> adds a backdrop element behind the top-most iframe, which swallows all clicks.</p>
-
-    <p>By default, clicking outside the top-most layer does nothing. If you set <code>exit_on_external_click</code> on one of the plugins you pass to <code>frame_stacker.push()</code>, then clicking on the backdrop will cause that layer to close. We recommend using the <code>frame_stacker.easy_exit</code> plugin, which sets <code>exit_on_external_click</code> to true, and also closes the layer if the user hits the escape key.</p>
-
+    <h2 id="communication">Inter-window communication</h2>
     <p>
-        <button onclick="fs.push('./external_click_test.html', tests.big_layer);" demo-button></button><br>
-        <button onclick="fs.push('./easy_exit_test.html', tests.big_layer, fs.easy_exit);" demo-button></button>
+        When pushing a new layer, you can communicate with the child window via the <code>on_load</code> plugin callback. When the child layer resolves, it can pass a value to be handled in the <code>on_resolve</code> callback.
+        <br>
+        <input type="text" value="foobar" id="communication_input"><br>
+        <button onclick="fs.push('./communication.html', fs.auto_layer, {
+            on_load: function(iframe) {
+                iframe.contentWindow.initialize(document.getElementById('communication_input').value);
+            },
+            on_resolve: function(value) {
+                document.getElementById('communication_output').innerText = value;
+            }
+        })" demo-button></button>
+        <br>
+        <output id="communication_output"></output>
     </p>
 
     <h2>full_layer</h2>
@@ -107,6 +114,15 @@
         <button demo-button onclick="fs.push('./edge_snapping_test.html', fs.edge_snapping_layer, fs.edge_snapping_buttons, fs.shadow_border)"></button>
     </p>
 
+    <h2>easy_exit</h2>
+    <p><code>frame_stacker</code> adds a backdrop element behind the top-most iframe, which swallows all clicks.</p>
+
+    <p>By default, clicking outside the top-most layer does nothing. The <code>frame_stacker.easy_exit</code> plugin can be used to close the top layer if the user clicks outside the layer's iframe, or if the user hits the esacep key.</p>
+    <p>
+        <button onclick="fs.push('./external_click_test.html', tests.big_layer);" demo-button></button><br>
+        <button onclick="fs.push('./easy_exit_test.html', tests.big_layer, fs.easy_exit);" demo-button></button>
+    </p>
+
     <h2>draggable</h2>
     Makes an iframe draggable. See <a href="/src/plugins/draggable.js" href-link><a> for details.
     <p>
@@ -114,8 +130,6 @@
     </p>
 
     <h2>TODO</h2>
-
-    <h2 id="communication">Inter-window communication</h2>
 
     <h2>Animations</h2>
     

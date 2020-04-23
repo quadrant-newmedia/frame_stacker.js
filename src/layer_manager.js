@@ -2,8 +2,6 @@
 	layer_manager.js
 
 	This module is responsible for managing the push/pop of iframe layers, and calling layer callbacks at appropriate times.
-
-	We try to implement as few "features" here as possible, leaving those to plugins. Certain features (locks_scroll, exit_on_external_click) require knowlegde of global state, however, so we have to manage them here.
 */
 
 let parent_active_element = null;
