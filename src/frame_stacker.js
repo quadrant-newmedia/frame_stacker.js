@@ -10,6 +10,7 @@ import edge_snapping_buttons from './plugins/edge_snapping_buttons.js';
 import exit_on_escape from './plugins/exit_on_escape.js';
 import focus_management from './plugins/focus_management.js';
 import full_layer from './plugins/full_layer.js';
+import lock_scroll from './plugins/lock_scroll.js';
 import shadow_border from './plugins/shadow_border.js';
 
 window.frame_stacker = {
@@ -68,6 +69,7 @@ window.frame_stacker = {
 	),
 	edge_snapping_buttons: edge_snapping_buttons,
 	exit_on_escape: exit_on_escape,
+	lock_scroll: lock_scroll,
 	shadow_border: shadow_border,
 };
 

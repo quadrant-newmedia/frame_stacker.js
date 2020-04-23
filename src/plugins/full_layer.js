@@ -1,4 +1,8 @@
-export default {
+import combine_plugins from '../combine_plugins.js';
+
+import lock_scroll from './lock_scroll.js';
+
+export default combine_plugins(lock_scroll, {
 	create: function(container) {
 		var iframe = document.createElement('iframe');
 		iframe.style = `
@@ -17,8 +21,7 @@ export default {
 	on_load: function(iframe, first_load) {
 		if (first_load) iframe.style.opacity = '1';
 	},
-	lock_scroll: true,
 	remove: function(iframe, container) {
 		container.removeChild(iframe);
 	},
-};
+});

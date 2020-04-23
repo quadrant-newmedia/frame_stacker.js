@@ -70,14 +70,6 @@ function get_unresolved_iframes() {
 	});
 }
 
-let scroll_locking_layers_count = 0;
-let scrollTop = null;
-let scrollLeft = null;
-function fix_scroll() {
-	document.documentElement.scrollTop = scrollTop;
-	document.documentElement.scrollLeft = scrollLeft;
-}
-
 function was_clicked(iframe, event) {
 	const rect = iframe.getBoundingClientRect();
 	const x = event.clientX;
@@ -119,7 +111,6 @@ export function push(url, {
 	on_covered,
 	on_resumed,
 	exit_on_external_click,
-	lock_scroll,
 	on_resolve,
 	remove
 }) {
@@ -136,15 +127,6 @@ export function push(url, {
 		parent_active_element = document.activeElement;
 	}
 
-	if (lock_scroll) {
-		scroll_locking_layers_count += 1
-		
-		// Reminder - executing these mutltiple times, for multiple layers, is fine:
-		scrollTop = document.documentElement.scrollTop;
-		scrollLeft = document.documentElement.scrollLeft;
-		addEventListener('scroll', fix_scroll);
-	}
-
 	const container = get_iframe_container();
 	const iframe = create(container);
 	iframe.style.pointerEvents = 'auto';
@@ -154,7 +136,6 @@ export function push(url, {
 		on_covered: on_covered,
 		on_resumed: on_resumed,
 		exit_on_external_click: exit_on_external_click,
-		lock_scroll: lock_scroll,
 		on_resolve: on_resolve,
 		remove: remove,
 		resolved: false,
@@ -189,13 +170,6 @@ export function resolve(value) {
 	const iframe = iframes.pop();
 	if (!iframe) return;
 	iframe._frame_stacker.resolved = true;
-
-	if (iframe._frame_stacker.lock_scroll) {
-		scroll_locking_layers_count--;
-		if (scroll_locking_layers_count == 0) {
-			removeEventListener('scroll', fix_scroll);
-		}
-	}
 
 	// Note - the iframe will be unloaded when the user removes it from the DOM via remove()
 	const container = iframe._frame_stacker.container;

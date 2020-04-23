@@ -33,15 +33,16 @@ export default (...plugins) => ({
 
     /* 
         If set, close the layer when the user clicks anywhere outside of the iframe
+
+        TODO - implement as plugin?
+        - add on_external_click callback
+        - call on top-most layer, when user clicked off layer
+        - plugins can: do nothing, resolve(), do a bounce animation/sound
+
+        - optionally, layer manager could be smart, and essentially do what it currently does
+        - it would only keep propagating as long each layer was resolved after calling on_external_click
     */
     exit_on_external_click: get_first_defined(plugins, 'exit_on_external_click'),
-
-    /*
-        Whether or not to lock the scroll position of the document 
-        while this layer is open.
-        Full-page layers will probably want to set it, others may or may not.
-    */
-    lock_scroll: get_first_defined(plugins, 'lock_scroll'),
 
     /*
         Callbacks - pretty self explanatory.
