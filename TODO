@@ -1,3 +1,4 @@
 
 - finish demos - draggable, edge snapping
 - put on github
+- history management -> what happens when user goes "back" from first page in layer? Should we make it close layer? Optional plugin?
