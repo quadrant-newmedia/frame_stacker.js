@@ -54,7 +54,21 @@
 
     <h1>frame_stacker.js</h1>
 
-    <p>A helper library for managing iframe-based modal dialogs/overlays (hereinafter known as "frames"). Frames are managed in a stack-like manner. Only the top-most frame is interactive.</p>
+    <p>A helper library for managing iframe-based modal dialogs/overlays (hereinafter known as "layers"). Layers are managed in a stack-like manner. Only the top-most layer is interactive.</p>
+
+    <h2>Related Work</h2>
+    <p>Current libraries for building modals/dialogs use one of two techniques:</p>
+    <ol>
+        <li>Using in-page content that is initially hidden (ie. Bootstrap modals)</li>
+        <li>Creating a dialog in javascript, with the content defined in javascript</li>
+    </ol>
+
+    <p>Such libraries can be a simple way to add a bit of interactivity to an otherwise static page.</p>
+
+    <p>Using iframes to define the content of your modals is a different concept altogether. Your layers are only loosely coupled, and highly reusable. It is more akin to using <code>window.open(...)</code> to open pop-up windows (except that we've taken care of all of the usability issues that that entails, and we allow for complete control of the style/animation of the iframe).</p>
+
+    <p>Know of any projects that already do the same thing as frame_stacker? Please <a href="https://github.com/quadrant-newmedia/frame_stacker.js/issues/new?labels=comment">leave a comment on our issue tracker</a></p>
+    <p></p>
 
     <h2>Installation</h2>
     <p>
@@ -77,32 +91,18 @@
     <p>
         On this page, and in every iframe we push, we've set:<br>
         <code>window.fs = window.parent.frame_stacker;</code><br>
-        On this page, window===window.parent, so this just creates a shorter alias for <code>frame_stacker</code>. In the iframes we push, window.parent refers to this window, so <code>fs</code> becomes a reference to this window's <code>frame_stacker</code>. That way, when code inside an iframe executes <code>fs.push(...)</code>, it will actually push a frame onto this window. This our recommended mode of operation.
+        On this page, window===window.parent, so this just creates a shorter alias for <code>frame_stacker</code>. In the iframes we push, window.parent refers to this window, so <code>fs</code> becomes a reference to this window's <code>frame_stacker</code>. That way, when code inside an iframe executes <code>fs.push(...)</code>, it will actually push a layer onto this window. This our recommended mode of operation.
     </p>
 
-    <h2>Accessibility / Usability</h2>
-    <p>We aim to implement all of the accessibility features outlined on <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/dialog_role">Mozilla's article about the ARIA "dialog" role.</a></p>
-    <ul>
-        <li>When pushing an iframe, that iframe is focused within the parent page.</li>
-        <li>When an iframe page loads, the first element with the <code>autofocus</code> attribute will be given focus within the iframe.</li>
-        <li>Keyboard focus is trapped in the top-most frame.</li>
-        <li>Keyboard focus is restored after resolving a frame (whichever element had focus before the frame was pushed will be refocused when it is closed).</li>
-        <li>Click events outside the top-most frame are blocked.</li>
-        <li>The iframe automatically gets <code>role="dialog"</code> and <code>aria-lable</code> attributes. The <code>aria-label</code> attribute's value comes from the <code>&lt;title&gt;</code> of the iframe's document.</li>
-    </ul>
-    <p>TODO:</p>
-    <ul>
-        <li>screen reader testing</li>
-        <li>see if we can tell browser extensions like Vimium not to create "hints" for any element outside of the top-most frame.</li>
-    </ul>
-    <!-- iframe will try to focus this element -->
-    <input type="text" placeholder="DUMMY ELEMENT" id="parent_focus_test_element">
+    <h2>Focus Management</h2>
+    <p>We aim to comply with the <a href="https://www.w3.org/TR/wai-aria-practices-1.1/#dialog_modal">WAI-ARIA guidelines</a> for modal dialogs, though some features are opt-in rather than forced.</p>
+    <p>TODO: screen reader testing</p>
     <button id="focus_test_button" onclick="fs.push('./focus_test.html', tests.big_layer)" demo-button></button>
 
     <h2>External Clicks/easy_exit</h2>
-    <p><code>frame_stacker</code> adds a backdrop element behind the top-most iframe, which stops you from activating buttons, etc.</p>
+    <p><code>frame_stacker</code> adds a backdrop element behind the top-most iframe, which swallows all clicks.</p>
 
-    <p>By default, clicking outside the top-most frame does nothing. If you set <code>exit_on_external_click</code> on one of the plugins you pass to <code>frame_stacker.push()</code>, then clicking outside of it will cause it close. We recommend using the <code>frame_stacker.easy_exit</code> plugin, which sets <code>exit_on_external_click</code> to true, and also closes the frame if the user hits the escape key.</p>
+    <p>By default, clicking outside the top-most layer does nothing. If you set <code>exit_on_external_click</code> on one of the plugins you pass to <code>frame_stacker.push()</code>, then clicking on the backdrop will cause that layer to close. We recommend using the <code>frame_stacker.easy_exit</code> plugin, which sets <code>exit_on_external_click</code> to true, and also closes the layer if the user hits the escape key.</p>
 
     <p>
         <button onclick="fs.push('./external_click_test.html', tests.big_layer);" demo-button></button><br>
@@ -114,7 +114,7 @@
 
     <h2>auto_layer</h2>
     <p>
-        <code>auto_layer</code> combines a few different plugins, which can also use individually. It keeps the iframe centered in the viewport (though it isn't dead-center vertically - we think it looks better when it's closer to the top), and automatically sizes the iframe based on its content. The auto sizing feature should work for any combination of margin, padding, and box-sizing on the iframe element or on the body element of its document. We do not currently support margin or padding on the html element (documentElement) of the iframe (I've never seen anyone do that).
+        <code>auto_layer</code> combines a few different plugins, which you can also use individually. It keeps the iframe centered in the viewport (though it isn't dead-center vertically - we think it looks better when it's closer to the top), and automatically sizes the iframe based on its content. The auto sizing feature should work for any combination of margin, padding, and box-sizing on the iframe element or on the body element of its document. We do not currently support margin or padding on the html element (documentElement) of the iframe (I've never seen anyone do that).
     </p>
     <p>
         <button onclick="fs.push('./user_sizable.html', fs.auto_layer, tests.iframe_with_padding)" demo-button></button>
@@ -123,20 +123,6 @@
     <h2>TODO</h2>
 
     <h2 id="communication">Inter-window communication</h2>
-    <h2>Nesting</h2>
-
-
-
-
-    <p>Frames are nestable. </p>
-
-    <h2>Basic/Full Layer Tests</h2>
-    <p>
-        <button onclick="fs.push('./basic_full_layer.html', fs.full_layer)">
-            Open Full Layer Modal
-        </button>
-    </p>
-
 
     <h2>Edge-snapping layer</h2>
     <p>
@@ -161,38 +147,7 @@
         <button onclick="fs.push('./draggable.html', fs.auto_centering_layer, fs.shadow_border, fs.draggable, fs.easy_exit)">Open Draggable Window</button>
     </p>
 
-
-    <div style="width: 400px;">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-    </div>
+    <h2>Animations</h2>
+    
 </body>
 </html>
