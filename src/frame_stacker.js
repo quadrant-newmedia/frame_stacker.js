@@ -6,7 +6,6 @@ import auto_sizing from './plugins/auto_sizing.js';
 import auto_centering_layer from './plugins/auto_centering_layer.js';
 import draggable from './plugins/draggable.js';
 import edge_snapping_layer from './plugins/edge_snapping_layer.js';
-import edge_snapping_buttons from './plugins/edge_snapping_buttons.js';
 import easy_exit from './plugins/easy_exit.js';
 import focus_management from './plugins/focus_management.js';
 import full_layer from './plugins/full_layer.js';
@@ -64,7 +63,6 @@ window.frame_stacker = {
 	auto_sizing: auto_sizing,
 	draggable: draggable,
 	easy_exit: easy_exit,
-	edge_snapping_buttons: edge_snapping_buttons,
 	lock_scroll: lock_scroll,
 	shadow_border: shadow_border,
 };

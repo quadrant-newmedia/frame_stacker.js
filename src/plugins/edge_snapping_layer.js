@@ -1,9 +1,7 @@
 /*
-Implements an overlay which occupies a fixed portion of the screen area, and which is always locked to one edge of the screen.
+Implements a layer which occupies a fixed portion of the screen area, and which is always locked to one edge of the screen.
 
-Adds a "frame_stacker_edge_snapper" object to the iframe window (with left(), right(), top(), bottom() methods), so that the inner page can snap itself.
-
-Use plugins/edge_snapping_buttons.js to implement a basic UI for invoking these commands, or create your own.
+Adds a "frame_stacker_edge_snapper" object to the iframe window (with left(), right(), top(), bottom() methods), so that the inner page can snap itself. You have to implement your own UI to call these methods.
 */
 
 import with_default_plugin from './with_default_plugin.js';
