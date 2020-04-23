@@ -70,47 +70,19 @@ function get_unresolved_iframes() {
 	});
 }
 
-function was_clicked(iframe, event) {
-	const rect = iframe.getBoundingClientRect();
-	const x = event.clientX;
-	const y = event.clientY;
-	return (
-		rect.left <= x && rect.right >= x && 
-		rect.top <= y && rect.bottom >= y 
-	);
-}
 click_blocker.addEventListener('click', function(event) {
-	/*
-		The user clicked outside the top-most iframe.
-		Figure out which layer the user intended to click on, 
-		and pop any frames above that having "exit_on_external_click"
-	*/
-	const iframes = get_unresolved_iframes();
-	// Intentionally iterate over iframes in reverse
-	// Stop as soon as we find the iframe that was clicked 
-	// (do NOT execute loop body for that iframe)
-	for (
-		let i = iframes.length - 1; 
-		i >= 0 && !was_clicked(iframes[i], event); 
-		i--
-	) {
-		if (iframes[i]._frame_stacker.exit_on_external_click) {
-			resolve();
-		}
-		else {
-			// This layer doesn't exit_on_external_click, so don't pop any more layers
-			break;
-		}
-	}
+	const top = get_unresolved_iframes().pop();
+	if (!top) return
+	top._frame_stacker.on_external_click(top);
 });
 
 export function push(url, {
 	create,
 	on_created,
 	on_load,
+	on_external_click,
 	on_covered,
 	on_resumed,
-	exit_on_external_click,
 	on_resolve,
 	remove
 }) {
@@ -135,7 +107,7 @@ export function push(url, {
 	iframe._frame_stacker = {
 		on_covered: on_covered,
 		on_resumed: on_resumed,
-		exit_on_external_click: exit_on_external_click,
+		on_external_click: on_external_click,
 		on_resolve: on_resolve,
 		remove: remove,
 		resolved: false,

@@ -31,19 +31,6 @@ export default (...plugins) => ({
     */
     remove: get_first_defined(plugins, 'remove'),
 
-    /* 
-        If set, close the layer when the user clicks anywhere outside of the iframe
-
-        TODO - implement as plugin?
-        - add on_external_click callback
-        - call on top-most layer, when user clicked off layer
-        - plugins can: do nothing, resolve(), do a bounce animation/sound
-
-        - optionally, layer manager could be smart, and essentially do what it currently does
-        - it would only keep propagating as long each layer was resolved after calling on_external_click
-    */
-    exit_on_external_click: get_first_defined(plugins, 'exit_on_external_click'),
-
     /*
         Callbacks - pretty self explanatory.
         Each is called with iframe as the sole argument, except where we 
@@ -56,6 +43,14 @@ export default (...plugins) => ({
         first_load will be true on the iframe's first load, false after that
     */
     on_load: execute_all(plugins, 'on_load'),
+
+    /*
+        Called if this is the top layer and the user clicks outside this layer's iframe.
+        You may want to resolve().
+        Or maybe you want to "bounce" or flash, to get user's attention.
+    */
+    on_external_click: execute_all(plugins, 'on_external_click'),
+
     on_covered: execute_all(plugins, 'on_covered'),
     on_resumed: execute_all(plugins, 'on_resumed'),
     /*
