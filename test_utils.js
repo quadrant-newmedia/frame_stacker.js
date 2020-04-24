@@ -55,11 +55,14 @@ function dedent(strings) {
 // short alias, make available in inline event handlers
 window.fs = window.parent.frame_stacker;
 
-[].slice.call(document.querySelectorAll('[data-display-onclick]')).forEach(function(e) {
+[].slice.call(document.querySelectorAll('[demo-button]')).forEach(function(e) {
 	var c = document.createElement('code');
-	c.classList.add('AttrDemoCode');
+	c.classList.add('demo-button-code');
 	c.innerText = dedent(e.getAttribute('onclick'));
 	e.parentElement.insertBefore(c, e);
+  if (!e.innerText.trim()) {
+    e.innerText = 'Try It'
+  }
 });
 
 window.tests =  {

@@ -17,14 +17,18 @@ h2 {
 	border-bottom: 1px solid #aaa;
 }
 
-.AttrDemoCode {
+.block-code {
 	display: block;
-	border: none;
-	border-left: 1px solid #aaa;
-	background-color: transparent;
-	white-space: pre-wrap;
+	max-width: 100%;
+	white-space: nowrap;
+	overflow-x: scroll;
 }
-
+.demo-button-code {
+	display: block;
+	max-width: 100%;
+	white-space: pre;
+	overflow-x: scroll;
+}
 
 button {
 	font-size: inherit;
@@ -36,14 +40,8 @@ button {
 button:active {
 	transform: scale(0.95);
 }
-[demo-button] {
-	font-family: monospace;
-	text-align: left;
-}
-[demo-button]:before {
-	display: inline;
-	content: attr(onclick);
-}
+
+/* TODO - ditch this - use js solution instead */
 [href-link]:before {
 	display: inline;
 	content: attr(href);	

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Window Layers Tests</title>
 
     <script type="text/javascript">
@@ -55,14 +57,14 @@
     <h2>Installation</h2>
     <p>
         Get the latest release: <br>
-        <code>
+        <code class="block-code">
     curl -L -O https://unpkg.com/frame_stacker/dist/frame_stacker.js</code>
     </p>
     <p>Add the script to your page and you're good to go.</p>
 
     <h2>Documentation</h2>
     <p>The demo on this page is a good starting point, but the <a href="https://github.com/quadrant-newmedia/frame_stacker.js">source code</a> serves as the official documentation. We recommend cloning and reading your local copy: <br>
-    <code>git clone --depth 1 https://github.com/quadrant-newmedia/frame_stacker.js.git</code></p>
+    <code class="block-code">git clone --depth 1 https://github.com/quadrant-newmedia/frame_stacker.js.git</code></p>
     <!-- TODO - make repo public, test -->
 
     <h2>Demo</h2>  
@@ -92,10 +94,10 @@
             },
             on_resolve: function(value) {
                 document.getElementById('communication_output').innerText = value;
-            }
-        })" demo-button></button>
+            },
+        });" demo-button></button>
         <br>
-        <output id="communication_output"></output>
+        Output: <output id="communication_output"></output>
     </p>
 
     <h2>full_layer</h2>
