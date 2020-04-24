@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html style="background-color: white;">
+<link rel="stylesheet" href="./style.css">
+<script defer src="/test_utils.js"></script>
+<title>communication test</title>
+
+<script>
+	function initialize(value) {
+		document.querySelector('input').value = value;
+	}
+</script>
+
+<p>Verify that:</p>
+<ul>
+	<li>The input's initial value is initialized by the parent</li>
+	<li>If you <button onclick="location.reload();">click this button</button>, this layer will reload, and the input's value will still be set correctly</li>
+	<li>The input's value will be passed to the parent</li>
+</ul>
+
+<input><br>
+<button demo-button onclick="fs.resolve(document.querySelector('input').value);"></button>
