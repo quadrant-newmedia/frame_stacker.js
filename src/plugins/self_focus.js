@@ -6,12 +6,11 @@ let focusout_update_active_element_timeout = null;
 function refocus(iframe) {
     /*
         This timeout is necessary, at least in Chrome on Mac
-        At the time the iframe blurs, focus hasn't finished transfering to the other element,
-        and if we refocus() synchronously, we will first focus, but then focus will immediately move back to the original target
+        At the time the iframe blurs, focus hasn't finished transferring to the other element, and if we refocus() synchronously, we will first focus, but then focus will immediately move back to the original target
     */
     setTimeout(function() {
         iframe.focus();
-        iframe[data_key].active_element.focus();
+        (iframe[data_key].active_element || iframe).focus();
     }, 0);
 }
 // TODO - on parent window focus, refocus top iframe (ie. focus leave browser entirely, then comes back by clicking on backdrop)
