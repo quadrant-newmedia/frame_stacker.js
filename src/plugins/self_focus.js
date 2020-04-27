@@ -2,6 +2,7 @@
 This plugin is for setting/restoring the focus WITHIN the top-most iframe
 */
 const data_key = '_frame_stacker_self_focus';
+let focusout_update_active_element_timeout = null;
 function refocus(iframe) {
     /*
         This timeout is necessary, at least in Chrome on Mac
@@ -26,7 +27,24 @@ export default {
         body.addEventListener('focusin', function() {
             iframe[data_key].active_element = iframe.contentDocument.activeElement;
         });
+        body.addEventListener('focusout', function() {
+            /* Things that might have triggered this:
+                1. The user moved focus to another element in this iframe
+                2. The user clicked the body inside this iframe, nothing is focused anymore
+                3. The user clicked outside this iframe
 
+            Our focusin listener will immediately handle case 1 for us.
+            In case 2, we want to update active_element, in case 3 we do not.
+            Cases 2 and 3 are currently indistinguishable. In either case, the iframe has not yet lost focus in the parent window. So we set a timeout to update the active_element. In case 3, we'll cancel the timeout in an iframe blur listener before the timeout executes.
+            */
+            focusout_update_active_element_timeout = setTimeout(function() {
+                iframe[data_key].active_element = iframe.contentDocument.activeElement;
+            }, 0);
+        });
+
+        iframe.contentWindow.addEventListener('blur', function() {
+            clearTimeout(focusout_update_active_element_timeout);
+        });
         iframe.contentWindow.addEventListener('blur', iframe[data_key].refocus);
 
         if (!iframe[data_key].covered) {
