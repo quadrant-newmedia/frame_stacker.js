@@ -1,3 +1,3 @@
-# frame_stacker.js
+Deprecated and archived.
 
-Work in progress.
+Use SimpleModal instead.
